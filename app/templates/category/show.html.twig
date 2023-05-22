@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ 'title_category_details'|trans({'%id%': category.id|default('')}) }}
+{% endblock %}
+
+{% block body %}
+    <h1>{{ 'title_category_details'|trans({'%id%': category.id|default('')}) }}</h1>
+    {% if category is defined and category|length %}
+        <dl class="dl-horizontal">
+            <dt>{{ 'label_id'|trans }}</dt>
+            <dd>{{ category.id }}</dd>
+            <dt>{{ 'label_name'|trans }}</dt>
+            <dd>{{  category.name }}</dd>
+            <dt>{{ 'label_created_at'|trans }}</dt>
+            <dd>{{ category.createdAt|format_date('long') }}</dd>
+            <dt>{{ 'label_updated_at'|trans }}</dt>
+            <dd>{{ category.updatedAt|format_date('long') }}</dd>
+        </dl>
+
+     <h2>{{ 'title_book_list'|trans }}</h2>
+        {% if books|length > 0 %}
+            {% for book in books %}
+                <h4>{{ book.title }}</h4>
+                <small>
+                    {{ book.createdAt|format_datetime('medium', 'short') }}
+                </small>
+            {% endfor %}
+        {% else %}
+            <div>{{ 'message_item_not_found'|trans }}</div>
+        {% endif %}
+
+
+    {% else %}
+        <p>
+            {{ 'message_item_not_found'|trans }}
+        </p>
+    {% endif %}
+    <p>
+        <a href="{{ url('category_index') }}" title="{{ 'action_back_to_list'|trans }}">
+            {{ 'action_back_to_list'|trans }}
+        </a>
+    </p>
+{% endblock %}
