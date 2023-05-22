@@ -21,7 +21,6 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @Route("/category")
  *
- * @IsGranted("ROLE_ADMIN")
  */
 class CategoryController extends AbstractController
 {
