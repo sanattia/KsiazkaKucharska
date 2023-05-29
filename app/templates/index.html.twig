@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ 'Książeczka Kucharska' }}
+{% endblock %}
+
+{% block body %}
+
+<div><p>Witaj w ksiazecze kucharskiej</p></div>
+    {% if is_granted('ROLE_ADMIN') %}
+    {% endif %}
+    {% if is_granted('ROLE_USER') %}
+    {% endif %}
+{% endblock %}

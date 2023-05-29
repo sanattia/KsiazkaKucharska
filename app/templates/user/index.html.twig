@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ 'title_user_index'|trans }}
+{% endblock %}
+
+{% block body %}
+    <h1>{{ 'title_user_index'|trans }}</h1>
+    <h2><div>{{ app.user.email }}</div></h2>
+    {% if is_granted('ROLE_ADMIN') %}
+        <div class="button">
+            <a href="{{ url('app_forgot_password_request') }}" class="btn btn-link">
+                {{ 'action_forgot_password'|trans }}
+            </a>
+        </div>
+    {% endif %}
+{% endblock %}

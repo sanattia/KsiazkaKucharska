@@ -29,7 +29,7 @@ class Recipe
     #[Assert\Length(min: "3", max: "64")]
     private $title;
 
-    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: "recipes")]
+    #[ORM\ManyToOne(targetEntity: Category::class)]
     #[ORM\JoinColumn(nullable: false)]
     private $category;
 
