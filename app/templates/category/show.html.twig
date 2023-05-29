@@ -18,12 +18,12 @@
             <dd>{{ category.updatedAt|format_date('long') }}</dd>
         </dl>
 
-     <h2>{{ 'title_book_list'|trans }}</h2>
-        {% if books|length > 0 %}
-            {% for book in books %}
-                <h4>{{ book.title }}</h4>
+        <h2>{{ 'title_recipe_list'|trans }}</h2>
+        {% if recipes|length > 0 %}
+            {% for recipe in recipes %}
+                <h4>{{ recipe.title }}</h4>
                 <small>
-                    {{ book.createdAt|format_datetime('medium', 'short') }}
+                    {{ recipe.createdAt|format_datetime('medium', 'short') }}
                 </small>
             {% endfor %}
         {% else %}

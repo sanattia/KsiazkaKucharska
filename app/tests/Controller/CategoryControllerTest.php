@@ -15,13 +15,6 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 class CategoryControllerTest extends WebTestCase
 {
     /**
-     * Test route.
-     *
-     * @const string
-     */
-    public const TEST_ROUTE = '/category';
-
-    /**
      * Test client.
      */
     private KernelBrowser $httpClient;
@@ -35,20 +28,20 @@ class CategoryControllerTest extends WebTestCase
     }
 
     /**
-     * Test route.
+     * Test index route for index
      */
-    public function testRoute(): void
+    public function testIndexRoute(): void
     {
-        // given
         $expectedStatusCode = 200;
 
         // when
-        $this->httpClient->request('GET', self::TEST_ROUTE);
+        $this->httpClient->request('GET', '/category/');
         $resultStatusCode = $this->httpClient->getResponse()->getStatusCode();
 
         // then
         $this->assertEquals($expectedStatusCode, $resultStatusCode);
     }
+
 
 
 }

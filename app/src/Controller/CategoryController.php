@@ -7,7 +7,7 @@ namespace App\Controller;
 
 use App\Entity\Category;
 use App\Form\CategoryType;
-use App\Service\BookService;
+use App\Service\RecipeService;
 use App\Service\CategoryService;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -70,7 +70,7 @@ class CategoryController extends AbstractController
      * Show action.
      *
      * @param \App\Entity\Category $category    Category entity
-     * @param BookService          $bookService
+     * @param RecipeService          $recipeService
      *
      * @return \Symfony\Component\HttpFoundation\Response HTTP response
      *
@@ -81,12 +81,12 @@ class CategoryController extends AbstractController
      *     requirements={"id": "[1-9]\d*"},
      * )
      */
-    public function show(Category $category, BookService $bookService): Response
+    public function show(Category $category, RecipeService $recipeService): Response
     {
         return $this->render(
             'category/show.html.twig',
             ['category' => $category,
-            'books' => $bookService->findBy(['category' => $category]),
+                'recipes' => $recipeService->findBy(['category' => $category]),
             ]
         );
     }
@@ -190,8 +190,8 @@ class CategoryController extends AbstractController
      */
     public function delete(Request $request, Category $category): Response
     {
-        if ($category->getBooks()->count()) {
-            $this->addFlash('warning', 'message_category_contain_books');
+        if ($category->getRecipes()->count()) {
+            $this->addFlash('warning', 'message_category_contain_recipes');
 
             return $this->redirectToRoute('category_index');
         }
