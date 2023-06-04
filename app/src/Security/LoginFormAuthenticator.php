@@ -117,19 +117,19 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
     /**
      * Get user.
      *
-     * @param mixed                                                       $credentials  Credentials
-     * @param \Symfony\Component\Security\Core\User\UserProviderInterface $userProvider User provider
+     * @param mixed $credentials Credentials
+     * @param UserProviderInterface $userProvider User provider
      *
-     * @return \App\Entity\User|null Result
+     * @return User|null Result
      */
-    public function getUser($credentials, UserProviderInterface $userProvider): ?User
+    public function getUser(mixed $credentials, UserProviderInterface $userProvider): ?User
     {
         $token = new CsrfToken('authenticate', $credentials['csrf_token']);
         if (!$this->csrfTokenManager->isTokenValid($token)) {
             throw new InvalidCsrfTokenException();
         }
 
-        $user = $this->userService->findOneByEmail(['email' => $credentials['email']]);
+        $user = $this->userService->findOneBy(['email' => $credentials['email']]);
 
         if (!$user) {
             // fail authentication with a custom error
@@ -181,7 +181,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
             return new RedirectResponse($targetPath);
         }
 
-        return new RedirectResponse($this->urlGenerator->generate('book_index'));
+        return new RedirectResponse($this->urlGenerator->generate('recipe_index'));
     }
 
     /**
