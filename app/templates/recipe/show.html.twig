@@ -18,6 +18,14 @@
             <dd>{{ recipe.createdAt|format_date('long') }}</dd>
             <dt>{{ 'label_updated_at'|trans }}</dt>
             <dd>{{ recipe.updatedAt|format_date('long') }}</dd>
+            <dt>{{ 'label_calories'|trans }}</dt>
+            <dd>{{  recipe.calories }}</dd>
+            <dt>{{ 'label_difficulty'|trans }}</dt>
+            <dd>{{  recipe.difficulty }}</dd>
+            <dt>{{ 'label_portion'|trans }}</dt>
+            <dd>{{  recipe.portion }}</dd>
+            <dt>{{ 'label_time'|trans }}</dt>
+            <dd>{{  recipe.time|date('H:i') }}</dd>
             <dt>{{ 'label_tags'|trans }}</dt>
             <dd>
 

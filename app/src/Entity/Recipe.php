@@ -9,6 +9,7 @@ use App\Repository\RecipeRepository;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -47,6 +48,18 @@ class Recipe
 
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: "recipe", orphanRemoval: true)]
     private $comments;
+
+    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $time = null;
+
+    #[ORM\Column(length: 125, nullable: true)]
+    private ?string $difficulty = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $portion = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $calories = null;
 
     /**
      * Recipe constructor.
@@ -234,5 +247,53 @@ class Recipe
     public function __toString()
     {
         return $this->title;
+    }
+
+    public function getTime(): ?\DateTimeInterface
+    {
+        return $this->time;
+    }
+
+    public function setTime(?\DateTimeInterface $time): self
+    {
+        $this->time = $time;
+
+        return $this;
+    }
+
+    public function getDifficulty(): ?string
+    {
+        return $this->difficulty;
+    }
+
+    public function setDifficulty(?string $difficulty): self
+    {
+        $this->difficulty = $difficulty;
+
+        return $this;
+    }
+
+    public function getPortion(): ?int
+    {
+        return $this->portion;
+    }
+
+    public function setPortion(?int $portion): self
+    {
+        $this->portion = $portion;
+
+        return $this;
+    }
+
+    public function getCalories(): ?int
+    {
+        return $this->calories;
+    }
+
+    public function setCalories(?int $calories): self
+    {
+        $this->calories = $calories;
+
+        return $this;
     }
 }

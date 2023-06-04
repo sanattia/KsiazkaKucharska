@@ -28,6 +28,10 @@ class RecipeFixtures extends AbstractBaseFixtures implements DependentFixtureInt
             $recipe->setCategory($this->getRandomReference('categories'));
             $recipe->setCreatedAt($this->faker->dateTimeBetween('-100 days', '-1 days'));
             $recipe->setUpdatedAt($this->faker->dateTimeBetween('-100 days', '-1 days'));
+            $recipe->setTime($this->faker->dateTime);
+            $recipe->setCalories($this->faker->numberBetween(100,250));
+            $recipe->setDifficulty($this->faker->word);
+            $recipe->setPortion($this->faker->numberBetween(1,10));
             $tags = $this->getRandomReferences(
                 'tags',
                 $this->faker->numberBetween(0, 5)

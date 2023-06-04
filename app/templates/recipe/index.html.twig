@@ -16,63 +16,51 @@
             </div>
         {% endif %}
 
-        <div class="navigation text-center">
-            {{ knp_pagination_render(pagination) }}
-        </div>
+        <div id="panels">
+            <div id="wrapper">
+                <div id="innerTrasa">
+                    {% for recipe in pagination.items %}
+                    <div class="innerTrasapoj">
+                        <div class="trasaDescription">
+                            <div class="recipeTitle">{{ 'label_title'|trans }} {{ recipe.title }}</div>
+                            <div class="recipeCategory">{{ 'label_category'|trans }} {{ recipe.category.name }}</div>
+                            <div class="recipePortion">{{ 'label_portion'|trans }} {{ recipe.portion }}</div>
+                            <div class="recipeDifficulty">{{ 'label_difficulty'|trans }} {{ recipe.difficulty }}</div>
+                            <div class="recipeCalories">{{ 'label_calories'|trans }} {{ recipe.calories }}</div>
+                            <div clsss="recipeTags">
 
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th>{{ knp_pagination_sortable(pagination, 'label_id'|trans, 'recipe.id') }}</th>
-                <th>{{ knp_pagination_sortable(pagination, 'label_title'|trans, 'recipe.title') }}</th>
-                <th>{{ knp_pagination_sortable(pagination, 'label_created_at'|trans, 'recipe.createdAt') }}</th>
-                <th>{{ knp_pagination_sortable(pagination, 'label_updated_at'|trans, 'recipe.updatedAt') }}</th>
-                <th>{{ knp_pagination_sortable(pagination, 'label_category'|trans, 'category.name') }}</th>
-                <th>{{ 'label_tags'|trans }}</th>
-                <th>{{ 'label_action'|trans }}</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for recipe in pagination.items %}
-                <tr>
-                    <td>{{ recipe.id }}</td>
-                    <td>{{ recipe.title }}</td>
-                    <td>{{ recipe.createdAt|format_date('long') }}</td>
-                    <td>{{ recipe.updatedAt|format_date('long') }}</td>
-                    <td>{{ recipe.category.name }}</td>
-                    <td>
+                                {% if recipe.tags is defined and recipe.tags|length %}
+                                    {% for tag in recipe.tags %}
+                                        {{ tag.title }}
+                                    {% endfor %}
+                                {% else %}
+                                    &nbsp;
+                                {% endif %}
+                            </div>
+                            <div class="recipeActions">
+                                <a href="{{ url('recipe_show', {id: recipe.id}) }}" title="{{ 'action_view'|trans }}">
+                                    {{ 'action_view'|trans }}
+                                </a>
+                                {% if is_granted('EDIT', recipe) %}
 
-                        {% if recipe.tags is defined and recipe.tags|length %}
-                            {% for tag in recipe.tags %}
-                                {{ tag.title }}
-                            {% endfor %}
-                        {% else %}
-                            &nbsp;
-                        {% endif %}
-                    </td>
-                    <td>
-                        <a href="{{ url('recipe_show', {id: recipe.id}) }}" title="{{ 'action_view'|trans }}">
-                            {{ 'action_view'|trans }}
-                        </a>
-                        {% if is_granted('EDIT', recipe) %}
-
-                            <a href="{{ url('recipe_edit', {id: recipe.id}) }}" title="{{ 'action_edit'|trans }}">
-                                {{ 'action_edit'|trans }}
-                            </a>
-                        {% endif %}
-                        {% if is_granted('DELETE', recipe) %}
-                        <a href="{{ url('recipe_delete', {id: recipe.id}) }}" title="{{ 'action_delete'|trans }}">
-                            {{ 'action_delete'|trans }}
-                        </a>
-                    </td>
-                    {% endif %}
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-
-        <div class="navigation text-center">
-            {{ knp_pagination_render(pagination) }}
+                                    <a href="{{ url('recipe_edit', {id: recipe.id}) }}" title="{{ 'action_edit'|trans }}">
+                                        {{ 'action_edit'|trans }}
+                                    </a>
+                                {% endif %}
+                                {% if is_granted('DELETE', recipe) %}
+                                <a href="{{ url('recipe_delete', {id: recipe.id}) }}" title="{{ 'action_delete'|trans }}">
+                                    {{ 'action_delete'|trans }}
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                    <div class="navigation text-center">
+                        {{ knp_pagination_render(pagination) }}
+                    </div>
+                </div>
         </div>
 
     {% else %}
