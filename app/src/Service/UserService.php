@@ -90,4 +90,16 @@ class UserService implements UserServiceInterface
     {
         return $this->userRepository->findOneById($id);
     }
+
+    /**
+     * Find user.
+     *
+     * @param string $email Email
+     *
+     * @return \App\Entity\User|null
+     */
+    public function findOneByEmail(string $email): ?User
+    {
+        return $this->userRepository->findOneByEmail(['email' => $email]);
+    }
 }

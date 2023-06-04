@@ -39,7 +39,7 @@ class UserRepository extends ServiceEntityRepository
     {
         return $this->getOrCreateQueryBuilder()
             ->select('user.id', 'user.email', 'user.roles')
-            ->orderBy('user.id', 'DESC');
+            ->orderBy('user.email', 'DESC');
     }
 
     /**

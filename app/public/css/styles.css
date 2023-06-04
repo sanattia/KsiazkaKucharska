@@ -61,7 +61,7 @@ form img{
          outline: 0;
          border: 0px solid #000000;
          border-radius: 20px;
-         background: #1c3140;
+         background: #eb6864;
          color: white;
      }
 
@@ -250,7 +250,6 @@ form img{
 
 .button {
     border: none;
-    color: white;
     padding: 0.8% 1%;
     text-align: center;
     text-decoration: none;
@@ -262,8 +261,6 @@ form img{
     font-size: 1rem;
     line-height: 1.5;
     border-radius: .25rem;
-    background-color: #198d8e;
-    border-color: #198d8e;
 }
 
 
@@ -272,7 +269,6 @@ form img{
 }
 
 .button a{
-    color:white;
 }
 
 /* Menu */
@@ -286,7 +282,7 @@ form img{
     padding-bottom: 0.8%;
     padding-top:0.8%;
     top: 0;
-    background: #1c3140;
+    background: #eb6864;
     color:white;
     font-family: palanquin;
     z-index: 1;
@@ -298,7 +294,7 @@ form img{
 .navBig{
     position: sticky;
     top: 0;
-    background: #1c3140;
+    background: #eb6864;
     color:white;
     font-family: palanquin;
     z-index: 1;
@@ -662,14 +658,14 @@ form{
 footer{
     clear:both;
     width:100%;
-    background-color: #1c3140;
+    background-color: #eb6864;
     position:relative;
     bottom:0;
     overflow:hidden;
 }
 
 .footer-distributed{
-    background-color: #1c3140;
+    background-color: #eb6864;
     box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.12);
     box-sizing: border-box;
     width: 100%;
