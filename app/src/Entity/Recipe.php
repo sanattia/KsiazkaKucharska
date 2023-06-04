@@ -45,7 +45,7 @@ class Recipe
     #[ORM\JoinTable(name: "recipes_tags")]
     private $tags;
 
-    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: "book", orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: "recipe", orphanRemoval: true)]
     private $comments;
 
     /**

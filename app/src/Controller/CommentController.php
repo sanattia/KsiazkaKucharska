@@ -71,7 +71,7 @@ class CommentController extends AbstractController
             $this->commentService->delete($comment);
             $this->addFlash('success', 'message_deleted_successfully');
 
-            return $this->redirectToRoute('book_index');
+            return $this->redirectToRoute('recipe_index');
         }
 
         return $this->render(
