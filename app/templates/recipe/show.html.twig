@@ -7,24 +7,24 @@
 {% block body %}
     <h1>{{ 'title_recipe_details'|trans({'%id%': recipe.id|default('')}) }}</h1>
     {% if recipe is defined and recipe|length %}
-        <dl class="dl-horizontal">
-            <dt>{{ 'label_id'|trans }}</dt>
+        <dl>
+            <dt>{{ 'label_id'|trans }}: </dt>
             <dd>{{ recipe.id }}</dd>
-            <dt>{{ 'label_category'|trans }}</dt>
+            <dt>{{ 'label_category'|trans }}: </dt>
             <dd>{{  recipe.category.name }}</dd>
-            <dt>{{ 'label_title'|trans }}</dt>
+            <dt>{{ 'label_title'|trans }}: </dt>
             <dd>{{  recipe.title }}</dd>
-            <dt>{{ 'label_created_at'|trans }}</dt>
+            <dt>{{ 'label_created_at'|trans }}: </dt>
             <dd>{{ recipe.createdAt|format_date('long') }}</dd>
-            <dt>{{ 'label_updated_at'|trans }}</dt>
+            <dt>{{ 'label_updated_at'|trans }}: </dt>
             <dd>{{ recipe.updatedAt|format_date('long') }}</dd>
-            <dt>{{ 'label_calories'|trans }}</dt>
+            <dt>{{ 'label_calories'|trans }}: </dt>
             <dd>{{  recipe.calories }}</dd>
-            <dt>{{ 'label_difficulty'|trans }}</dt>
+            <dt>{{ 'label_difficulty'|trans }}: </dt>
             <dd>{{  recipe.difficulty }}</dd>
-            <dt>{{ 'label_portion'|trans }}</dt>
+            <dt>{{ 'label_portion'|trans }}: </dt>
             <dd>{{  recipe.portion }}</dd>
-            <dt>{{ 'label_time'|trans }}</dt>
+            <dt>{{ 'label_time'|trans }}: </dt>
             <dd>{{  recipe.time|date('H:i') }}</dd>
             <dt>{{ 'label_tags'|trans }}</dt>
             <dd>
@@ -38,6 +38,7 @@
                 {% endif %}
             </dd>
         </dl>
+        <div class="content"><p>{{  recipe.content | raw }}</p></div>
         <h2>{{ 'comment_list'|trans }}</h2>
         {% if comments|length > 0 %}
             {% for comment in comments %}

@@ -1,79 +1,69 @@
 <?php
 /**
- * User Entity.
+ * User entity.
  */
 
 namespace App\Entity;
 
 use App\Entity\Enum\UserRole;
 use App\Repository\UserRepository;
-use DateTime;
-use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * Class User.
+ */
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
+#[ORM\Table(name: 'users')]
+#[ORM\UniqueConstraint(name: 'email_idx', columns: ['email'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    /**
+     * Primary key.
+     *
+     * @var int|null
+     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
+    /**
+     * Email.
+     *
+     * @var string|null
+     */
     #[ORM\Column(type: 'string', length: 180, unique: true)]
+    #[Assert\NotBlank]
+    #[Assert\Email]
     private ?string $email;
 
-    #[ORM\Column(type: 'string', length: 180)]
-    private ?string $username;
-
+    /**
+     * Roles.
+     *
+     * @var array<int, string>
+     */
     #[ORM\Column(type: 'json')]
     private array $roles = [];
 
+    /**
+     * Password.
+     *
+     * @var string|null
+     */
     #[ORM\Column(type: 'string')]
-    private string $password;
-
-    #[ORM\Column(type: 'datetime')]
-    #[Assert\Type(type: '\DateTimeInterface')]
-    private DateTimeInterface $createdAt;
-
-    #[ORM\Column(type: 'datetime')]
-    #[Assert\Type(type: '\DateTimeInterface')]
-    private DateTimeInterface $updatedAt;
-
+    #[Assert\NotBlank]
+    private ?string $password;
 
     /**
-     * A non-persisted field that's used to create the encoded password.
+     * Plain password.
      *
-     * @var string
+     * @var string|null
      */
-    private $plainPassword;
-
-    /**
-     * Role user.
-     *
-     * @var string
-     */
-    public const ROLE_USER = 'ROLE_USER';
-
-    /**
-     * Role admin.
-     *
-     * @var string
-     */
-    public const ROLE_ADMIN = 'ROLE_ADMIN';
-
-    /**
-     * construct.
-     */
-    public function __construct()
-    {
-        $this->setUpdatedAt(new DateTime('now'));
-        $this->setCreatedAt(new DateTime('now'));
-    }
+    #[Assert\NotBlank]
+    private ?string $plainPassword;
 
     /**
      * Getter for id.
@@ -100,7 +90,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      *
      * @param string $email Email
      */
-    public function setEmail(string $email): void
+    public function setEmail(?string $email): void
     {
         $this->email = $email;
     }
@@ -110,7 +100,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      *
      * @see UserInterface
      *
-     * @return string options string
+     * @return string email
      */
     public function getUserIdentifier(): string
     {
@@ -118,48 +108,39 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return string options string
+     * @deprecated since Symfony 5.3, use getUserIdentifier instead
+     *
+     * @return string email
      */
     public function getUsername(): string
     {
         return (string) $this->email;
     }
 
-
-    /**
-     * Setter for the Username.
-     *
-     * @param string $username Username
-     */
-    public function setUsername($username)
-    {
-        $this->username = $username;
-    }
-
     /**
      * Getter for roles.
      *
-     * @return array
+     * @return array<int, string> Roles
      *
      * @see UserInterface
      */
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
+        $roles[] = UserRole::ROLE_USER->value;
 
         return array_unique($roles);
     }
 
     /**
-     * @param array $roles
+     * Setter for roles.
+     *
+     * @param array<int, string> $roles Roles
      */
-    public function setRoles(array $roles): void
+    public function setRoles(?array $roles): void
     {
         $this->roles = $roles;
     }
-
 
     /**
      * Getter for password.
@@ -176,18 +157,40 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * Setter for password.
      *
-     * @param string options $password
+     * @param string $password User password
      */
-    public function setPassword(string $password): void
+    public function setPassword(?string $password): void
     {
         $this->password = $password;
+    }
+
+    /**
+     * Getter for plainPassword.
+     *
+     * @return string|null PlainPassword
+     */
+    public function getPlainPassword(): ?string
+    {
+        return $this->plainPassword;
+    }
+
+    /**
+     * Setter for plainPassword.
+     *
+     * @param string $plainPassword User plainPassword
+     */
+    public function setPlainPassword(?string $plainPassword): void
+    {
+        $this->plainPassword = $plainPassword;
     }
 
     /**
      * Returning a salt is only needed, if you are not using a modern
      * hashing algorithm (e.g. bcrypt or sodium) in your security.yaml.
      *
-     * @return string|null options string
+     * @see UserInterface
+     *
+     * @return string|null null
      */
     public function getSalt(): ?string
     {
@@ -201,63 +204,5 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function eraseCredentials(): void
     {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
-    }
-
-    /**
-     * Getter for Create At.
-     *
-     * @return DateTimeInterface|null options datetime
-     */
-    public function getCreatedAt(): ?DateTimeInterface
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * Setter for Create At.
-     *
-     * @param DateTimeInterface options $createdAt
-     *
-     * @return $this options this
-     */
-    public function setCreatedAt(DateTimeInterface $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    /**
-     * Getter for Update At.
-     *
-     * @return DateTimeInterface|null options date time
-     */
-    public function getUpdatedAt(): ?DateTimeInterface
-    {
-        return $this->updatedAt;
-    }
-
-    /**
-     * Setter for Update At.
-     *
-     * @param DateTimeInterface options $updatedAt
-     *
-     * @return $this
-     */
-    public function setUpdatedAt(DateTimeInterface $updatedAt): self
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function __toString()
-    {
-        return $this->email;
     }
 }

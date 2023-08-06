@@ -15,6 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 
 /**
  * Class RecipeType.
@@ -121,6 +122,16 @@ class RecipeType extends AbstractType
                 'label' => 'Tagi',
                 'required' => false,
                 'attr' => ['max_length' => 128],
+            ]
+        );
+
+        $builder->add(
+            'content',
+            CKEditorType::class,
+            [
+                'label' => 'Content',
+                'input_sync' => true,
+                'required' => false,
             ]
         );
 

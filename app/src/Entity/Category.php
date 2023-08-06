@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\CategoryRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -22,6 +23,9 @@ class Category
 
     #[ORM\Column(length: 255)]
     private ?string $name = null;
+
+    #[ORM\OneToMany(mappedBy: 'category', targetEntity: Recipe::class, fetch: 'EXTRA_LAZY')]
+    private array|Collection $recipes;
 
     /**
      * Getter for Id.
@@ -100,5 +104,46 @@ class Category
     public function setName(string $name): void
     {
         $this->name = $name;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getRecipes(): Collection
+    {
+        return $this->recipes;
+    }
+
+    /**
+     * @param Recipe $recipe
+     * @return Category recipe
+     *
+     */
+    public function addRecipe(Recipe $recipe): self
+    {
+        if (!$this->recipes->contains($recipe)) {
+            $this->recipes[] = $recipe;
+            $recipe->setCategory($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Recipe $recipe
+     * @return Category $recipe
+     *
+     */
+    public function removeRecipe(Recipe $recipe): self
+    {
+        if ($this->recipes->contains($recipe)) {
+            $this->recipes->removeElement($recipe);
+            // set the owning side to null (unless already changed)
+            if ($recipe->getCategory() === $this) {
+                $recipe->setCategory(null);
+            }
+        }
+
+        return $this;
     }
 }

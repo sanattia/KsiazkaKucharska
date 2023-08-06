@@ -5,74 +5,55 @@
 
 namespace App\Security;
 
-use App\Entity\User;
-use App\Repository\UserRepository;
-use App\Service\UserService;
+use Exception;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
-use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Security;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\User\UserProviderInterface;
-use Symfony\Component\Security\Csrf\CsrfToken;
-use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
-use Symfony\Component\Security\Guard\Authenticator\AbstractFormLoginAuthenticator;
-use Symfony\Component\Security\Guard\PasswordAuthenticatedInterface;
+use Symfony\Component\Security\Http\Authenticator\AbstractLoginFormAuthenticator;
+use Symfony\Component\Security\Http\Authenticator\Passport\Badge\CsrfTokenBadge;
+use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
+use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordCredentials;
+use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
 /**
  * Class LoginFormAuthenticator.
  */
-class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements PasswordAuthenticatedInterface
+class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 {
     use TargetPathTrait;
 
     /**
-     * User service.
+     * Login route.
      *
-     * @var UserService
+     * @const string
      */
-    private UserService $userService;
+    public const LOGIN_ROUTE = 'app_login';
 
     /**
-     * URL generator.
+     * Default route.
      *
-     * @var \Symfony\Component\Routing\Generator\UrlGeneratorInterface
+     * @const string
      */
-    private $urlGenerator;
+    public const DEFAULT_ROUTE = 'recipe_index';
 
     /**
-     * CSRF token manager.
-     *
-     * @var \Symfony\Component\Security\Csrf\CsrfTokenManagerInterface
+     * URL Generator.
      */
-    private $csrfTokenManager;
+    private UrlGeneratorInterface $urlGenerator;
 
     /**
-     * Password encoder.
+     * Constructor.
      *
-     * @var \Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface
+     * @param UrlGeneratorInterface $urlGenerator UrlGenerator
      */
-    private $passwordEncoder;
-
-    /**
-     * LoginFormAuthenticator constructor.
-     *
-     * @param \App\Service\UserService                                              $userService      User service
-     * @param \Symfony\Component\Routing\Generator\UrlGeneratorInterface            $urlGenerator     URL generator
-     * @param \Symfony\Component\Security\Csrf\CsrfTokenManagerInterface            $csrfTokenManager CSRF token manager
-     * @param \Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface $passwordEncoder  Password encoder
-     */
-    public function __construct(UserService $userService, UrlGeneratorInterface $urlGenerator, CsrfTokenManagerInterface $csrfTokenManager, UserPasswordEncoderInterface $passwordEncoder)
+    public function __construct(UrlGeneratorInterface $urlGenerator)
     {
-        $this->userService = $userService;
         $this->urlGenerator = $urlGenerator;
-        $this->csrfTokenManager = $csrfTokenManager;
-        $this->passwordEncoder = $passwordEncoder;
     }
 
     /**
@@ -86,111 +67,76 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
      */
     public function supports(Request $request): bool
     {
-        return 'app_login' === $request->attributes->get('_route')
-            && $request->isMethod('POST');
+        return $request->isMethod('POST') && $this->getLoginUrl($request) === $request->getRequestUri();
     }
 
     /**
-     * Get the authentication credentials from the request and return them
-     * as any type (e.g. an associate array). If you return null, authentication
-     * will be skipped.
+     * Create a passport for the current request.
      *
-     * @param Request $request HTTP request
+     * The passport contains the user, credentials and any additional information
+     * that has to be checked by the Symfony Security system. For example, a login
+     * form authenticator will probably return a passport containing the user, the
+     * presented password and the CSRF token value.
      *
-     * @return array Credential array
+     * You may throw any AuthenticationException in this method in case of error (e.g.
+     * a UserNotFoundException when the user cannot be found).
+     *
+     * @param Request $request Request
+     *
+     * @return Passport Passport
+     *
+     * @throws AuthenticationException
      */
-    public function getCredentials(Request $request): array
+    public function authenticate(Request $request): Passport
     {
-        $credentials = [
-            'email' => $request->request->get('email'),
-            'password' => $request->request->get('password'),
-            'csrf_token' => $request->request->get('_csrf_token'),
-        ];
-        $request->getSession()->set(
-            Security::LAST_USERNAME,
-            $credentials['email']
+        $email = $request->request->get('email', '');
+
+        $request->getSession()->set(Security::LAST_USERNAME, $email);
+
+        return new Passport(
+            new UserBadge($email),
+            new PasswordCredentials($request->request->get('password', '')),
+            [
+                new CsrfTokenBadge('authenticate', $request->request->get('_csrf_token')),
+            ]
         );
-
-        return $credentials;
-    }
-
-    /**
-     * Get user.
-     *
-     * @param mixed $credentials Credentials
-     * @param UserProviderInterface $userProvider User provider
-     *
-     * @return User|null Result
-     */
-    public function getUser(mixed $credentials, UserProviderInterface $userProvider): ?User
-    {
-        $token = new CsrfToken('authenticate', $credentials['csrf_token']);
-        if (!$this->csrfTokenManager->isTokenValid($token)) {
-            throw new InvalidCsrfTokenException();
-        }
-
-        $user = $this->userService->findOneBy(['email' => $credentials['email']]);
-
-        if (!$user) {
-            // fail authentication with a custom error
-            throw new CustomUserMessageAuthenticationException('Email could not be found.');
-        }
-
-        return $user;
-    }
-
-    /**
-     * Checks credentials.
-     *
-     * @param mixed                                               $credentials Credentials
-     * @param \Symfony\Component\Security\Core\User\UserInterface $user        User
-     *
-     * @return bool Result
-     */
-    public function checkCredentials($credentials, UserInterface $user): bool
-    {
-        return $this->passwordEncoder->isPasswordValid($user, $credentials['password']);
-    }
-
-    /**
-     * Used to upgrade (rehash) the user's password automatically over time.
-     *
-     * @param array $credentials User credentials
-     *
-     * @return string|null Hashed password
-     */
-    public function getPassword($credentials): ?string
-    {
-        return $credentials['password'];
     }
 
     /**
      * Called when authentication executed and was successful!
      *
-     * @param \Symfony\Component\HttpFoundation\Request                            $request     HTTP request
-     * @param \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token       Authentication token
-     * @param string                                                               $providerKey The key of the firewall
+     * This should return the Response sent back to the user, like a
+     * RedirectResponse to the last page they visited.
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse Redirect response
+     * If you return null, the current request will continue, and the user
+     * will be authenticated. This makes sense, for example, with an API.
      *
-     * @throws \Exception
+     * @param Request        $request      HTTP request
+     * @param TokenInterface $token        Token
+     * @param string         $firewallName Firewall name
+     *
+     * @return Response|null HTTP response
+     *
+     * @throws Exception
      */
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey): RedirectResponse
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
+        if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
         }
 
-        return new RedirectResponse($this->urlGenerator->generate('recipe_index'));
+        return new RedirectResponse($this->urlGenerator->generate(self::DEFAULT_ROUTE));
     }
 
     /**
-     * Return the URL to the login page.
+     * Get login URL.
+     *
+     * @param Request $request HTTP request
      *
      * @return string Login URL
      */
-    protected function getLoginUrl(): string
+    protected function getLoginUrl(Request $request): string
     {
-        return $this->urlGenerator->generate('app_login');
+        return $this->urlGenerator->generate(self::LOGIN_ROUTE);
     }
 }

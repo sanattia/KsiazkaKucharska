@@ -433,6 +433,10 @@ form{
 .duzaIkona{
     width: 8em;
     height: 8em;
+    object-fit: cover;
+    flex-shrink: 0;
+    min-width: 100%;
+    min-height: 100%;
 }
 
 .profilIkona{
@@ -588,17 +592,40 @@ form{
     border-radius: 9px;
 }
 
+dl{
+    display: flex;
+    align-items: first baseline;
+}
+
+dt, dd {
+    margin:0.3%;
+}
+
 .image-wrapper-trasa{
-    position:relative;
+    position: relative;
     display: inline-block;
-    width:30%;
-    top:0;
+    width: 81%;
+    top: 0;
+    object-fit: cover;
+    height: 53%;
+    width: 100%;
+    height: 9em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.image-wrapper-trasa a {
+    flex-shrink: 0;
+    min-width: 100%;
+    min-height: 100%
 }
 
 .trasaDescription{
-    width:50%;
+    width:100%;
     text-overflow: ellipsis;
-    display: inline-block;
+    display: block;
     position: relative;
     float: right;
     font-size: smaller;
@@ -630,6 +657,10 @@ form{
 
 #wrapper{
     font-family: palanquin;
+}
+
+.recipe{
+    display: inline-block;
 }
 
 .arrowDown{

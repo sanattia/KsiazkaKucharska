@@ -30,7 +30,7 @@ class Recipe
     #[Assert\Length(min: "3", max: "64")]
     private $title;
 
-    #[ORM\ManyToOne(targetEntity: Category::class)]
+    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: "recipes")]
     #[ORM\JoinColumn(nullable: false)]
     private $category;
 
@@ -46,7 +46,7 @@ class Recipe
     #[ORM\JoinTable(name: "recipes_tags")]
     private $tags;
 
-    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: "recipe", orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: "recipe", targetEntity: Comment::class, orphanRemoval: true)]
     private $comments;
 
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
@@ -60,6 +60,9 @@ class Recipe
 
     #[ORM\Column(nullable: true)]
     private ?int $calories = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $content = null;
 
     /**
      * Recipe constructor.
@@ -293,6 +296,18 @@ class Recipe
     public function setCalories(?int $calories): self
     {
         $this->calories = $calories;
+
+        return $this;
+    }
+
+    public function getContent(): ?string
+    {
+        return $this->content;
+    }
+
+    public function setContent(?string $content): self
+    {
+        $this->content = $content;
 
         return $this;
     }

@@ -146,21 +146,23 @@ class RecipeController extends AbstractController
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      *
-     * @Route(
-     *     "/{id}/edit",
-     *     methods={"GET", "PUT"},
-     *     requirements={"id": "[1-9]\d*"},
-     *     name="recipe_edit",
-     * )
      *
      * @IsGranted(
      *     "EDIT",
      *     subject="recipe",
      * )
      */
+    #[Route('/{id}/edit', name: 'recipe_edit', requirements: ['id' => '[1-9]\d*'], methods: 'GET|PUT')]
     public function edit(Request $request, Recipe $recipe): Response
     {
-        $form = $this->createForm(RecipeType::class, $recipe, ['method' => 'PUT']);
+        $form = $this->createForm(
+            RecipeType::class,
+            $recipe,
+            [
+                'method' => 'PUT',
+                'action' => $this->generateUrl('recipe_edit', ['id' => $recipe->getId()]),
+            ]
+        );
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -191,18 +193,12 @@ class RecipeController extends AbstractController
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      *
-     * @Route(
-     *     "/{id}/delete",
-     *     methods={"GET", "DELETE"},
-     *     requirements={"id": "[1-9]\d*"},
-     *     name="recipe_delete",
-     * )
-     *
      * @IsGranted(
      *     "DELETE",
      *     subject="recipe",
      * )
      */
+    #[Route('/{id}/delete', name: 'recipe_delete', requirements: ['id' => '[1-9]\d*'], methods: 'GET|DELETE')]
     public function delete(Request $request, Recipe $recipe): Response
     {
         $form = $this->createForm(FormType::class, $recipe, ['method' => 'DELETE']);

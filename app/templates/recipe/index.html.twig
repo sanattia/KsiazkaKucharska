@@ -21,12 +21,13 @@
                 <div id="innerTrasa">
                     {% for recipe in pagination.items %}
                     <div class="innerTrasapoj">
+                        <div class="image-wrapper-trasa"> <a href="{{ asset( 'uploads/noPic.png' ) }}" data-lightbox="photos"><img class="img-fluid duzaIkona" src="{{ asset( 'uploads/noPic.png' ) }}"></a></div>
                         <div class="trasaDescription">
-                            <div class="recipeTitle">{{ 'label_title'|trans }} {{ recipe.title }}</div>
-                            <div class="recipeCategory">{{ 'label_category'|trans }} {{ recipe.category.name }}</div>
-                            <div class="recipePortion">{{ 'label_portion'|trans }} {{ recipe.portion }}</div>
-                            <div class="recipeDifficulty">{{ 'label_difficulty'|trans }} {{ recipe.difficulty }}</div>
-                            <div class="recipeCalories">{{ 'label_calories'|trans }} {{ recipe.calories }}</div>
+                            <div class="recipe">{{ 'label_title'|trans }} {{ recipe.title }}</div>
+                            <div class="recipe">{{ 'label_category'|trans }} {{ recipe.category.name }}</div>
+                            <div class="recipe">{{ 'label_portion'|trans }} {{ recipe.portion }}</div>
+                            <div class="recipe">{{ 'label_difficulty'|trans }} {{ recipe.difficulty }}</div>
+                            <div class="recipe">{{ 'label_calories'|trans }} {{ recipe.calories }}</div>
                             <div clsss="recipeTags">
 
                                 {% if recipe.tags is defined and recipe.tags|length %}

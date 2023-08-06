@@ -47,7 +47,7 @@
                         </a>
                         {% endif %}
                         {% if is_granted('DELETE', category) %}
-                        {% if not category.books|length %}
+                        {% if not category.recipes|length %}
                         <a href="{{ url('category_delete', {id: category.id}) }}" title="{{ 'action_delete'|trans }}">
                             {{ 'action_delete'|trans }}
                         </a>
