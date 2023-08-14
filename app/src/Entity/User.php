@@ -58,14 +58,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password;
 
     /**
-     * Plain password.
-     *
-     * @var string|null
-     */
-    #[Assert\NotBlank]
-    private ?string $plainPassword;
-
-    /**
      * Getter for id.
      *
      * @return int|null Id
@@ -90,7 +82,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      *
      * @param string $email Email
      */
-    public function setEmail(?string $email): void
+    public function setEmail(string $email): void
     {
         $this->email = $email;
     }
@@ -98,9 +90,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * A visual identifier that represents this user.
      *
-     * @see UserInterface
+     * @return string User identifier
      *
-     * @return string email
+     * @see UserInterface
      */
     public function getUserIdentifier(): string
     {
@@ -110,7 +102,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @deprecated since Symfony 5.3, use getUserIdentifier instead
      *
-     * @return string email
+     * @return string Username
      */
     public function getUsername(): string
     {
@@ -127,6 +119,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
         $roles[] = UserRole::ROLE_USER->value;
 
         return array_unique($roles);
@@ -137,7 +130,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      *
      * @param array<int, string> $roles Roles
      */
-    public function setRoles(?array $roles): void
+    public function setRoles(array $roles): void
     {
         $this->roles = $roles;
     }
@@ -159,29 +152,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      *
      * @param string $password User password
      */
-    public function setPassword(?string $password): void
+    public function setPassword(string $password): void
     {
         $this->password = $password;
-    }
-
-    /**
-     * Getter for plainPassword.
-     *
-     * @return string|null PlainPassword
-     */
-    public function getPlainPassword(): ?string
-    {
-        return $this->plainPassword;
-    }
-
-    /**
-     * Setter for plainPassword.
-     *
-     * @param string $plainPassword User plainPassword
-     */
-    public function setPlainPassword(?string $plainPassword): void
-    {
-        $this->plainPassword = $plainPassword;
     }
 
     /**
@@ -189,8 +162,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * hashing algorithm (e.g. bcrypt or sodium) in your security.yaml.
      *
      * @see UserInterface
-     *
-     * @return string|null null
      */
     public function getSalt(): ?string
     {
@@ -204,5 +175,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function eraseCredentials(): void
     {
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
     }
 }

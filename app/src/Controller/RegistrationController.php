@@ -6,85 +6,87 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Form\HomeType;
-use App\Form\RegistrationFormType;
-use App\Service\RegistrationService;
+use App\Form\Type\RegistrationType;
+use App\Security\LoginFormAuthenticator;
 use App\Service\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class RegistrationController.
  */
 class RegistrationController extends AbstractController
 {
-
     /**
      * User service.
      */
     private UserService $userService;
 
     /**
-     * Registration service.
+     * Translator.
      */
-    private RegistrationService $registrationService;
+    private TranslatorInterface $translator;
 
     /**
      * RegistrationController constructor.
      *
-     * @param \App\Service\RegistrationService $registrationService Registration service
-     * @param \App\Service\UserService         $userService         User service
+     * @param UserService         $userService User service
+     * @param TranslatorInterface $translator  Translator
      */
-    public function __construct(RegistrationService $registrationService, UserService $userService)
+    public function __construct(UserService $userService, TranslatorInterface $translator)
     {
-        $this->registrationService = $registrationService;
         $this->userService = $userService;
-    }
+        $this->translator = $translator;
+    }// end __construct()
 
     /**
-     * Create action.
+     * Register action.
      *
-     * @param Request $request HTTP request
+     * @param Request                    $request           HTTP request
+     * @param UserAuthenticatorInterface $userAuthenticator Authenticator
+     * @param LoginFormAuthenticator     $authenticator     Login form authenticator
      *
      * @return Response HTTP response
-     *
-     * @Route(
-     *     "/register",
-     *     methods={"GET", "POST"},
-     *     name="app_register",
-     * )
-     *
-     * @throws \Doctrine\ORM\ORMException
      */
-    public function create(Request $request): Response
+    #[Route(
+        '/register',
+        name: 'app_register',
+        methods: [
+            'GET',
+            'POST',
+        ],
+    )]
+    public function register(Request $request, UserAuthenticatorInterface $userAuthenticator, LoginFormAuthenticator $authenticator): Response
     {
         $user = new User();
-        $form = $this->createForm(RegistrationFormType::class);
+        $form = $this->createForm(
+            RegistrationType::class,
+            $user,
+        );
         $form->handleRequest($request);
 
-
         if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
+            $this->userService->save($user, $form->get('password')->getData());
 
-            if ($this->userService->findOneByEmail($data['email']) !== null) {
-                $this->addFlash('danger', 'message_email_already_exists');
+            $this->addFlash(
+                'success',
+                $this->translator->trans('message.registered_successfully')
+            );
 
-                return $this->redirectToRoute('app_register');
-            }
-
-            $this->registrationService->register($data, $user);
-            $this->addFlash('success', 'message_registered_successfully');
-
-            return $this->redirectToRoute('home');
+            return $userAuthenticator->authenticateUser(
+                $user,
+                $authenticator,
+                $request,
+            );
         }
 
         return $this->render(
-            'registration/index.html.twig',
-            [
-                'form' => $form->createView(),
-            ]
+            'registration/register.html.twig',
+            ['form' => $form->createView()]
         );
-    }
-}
+    }// end register()
+}// end class

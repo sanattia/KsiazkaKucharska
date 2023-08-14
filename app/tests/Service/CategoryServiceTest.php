@@ -26,6 +26,8 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  */
 class CategoryServiceTest extends KernelTestCase
 {
+    // ...
+
     /**
      * Category repository.
      */

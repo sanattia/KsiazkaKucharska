@@ -1,52 +1,61 @@
 <?php
 /**
- * Category service.
+ * Category Service.
  */
 
 namespace App\Service;
 
 use App\Entity\Category;
+use App\Entity\User;
 use App\Repository\CategoryRepository;
+use App\Repository\OperationRepository;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 
 /**
- * Class CategoryService.
+ * Interface CategoryService.
+ *
+ * @method Category|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Category|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Category[]    findAll()
+ * @method Category[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ *
+ * @extends ServiceEntityRepository<Category>
  */
-class CategoryService
+class CategoryService implements CategoryServiceInterface
 {
     /**
      * Category repository.
-     *
-     * @var \App\Repository\CategoryRepository
      */
-    private $categoryRepository;
+    private CategoryRepository $categoryRepository;
+
 
     /**
      * Paginator.
-     *
-     * @var \Knp\Component\Pager\PaginatorInterface
      */
-    private $paginator;
+    private PaginatorInterface $paginator;
 
     /**
      * CategoryService constructor.
      *
-     * @param \App\Repository\CategoryRepository      $categoryRepository Category repository
-     * @param \Knp\Component\Pager\PaginatorInterface $paginator          Paginator
+     * @param CategoryRepository  $categoryRepository  Category repository
+     * @param PaginatorInterface  $paginator           Paginator
      */
     public function __construct(CategoryRepository $categoryRepository, PaginatorInterface $paginator)
     {
         $this->categoryRepository = $categoryRepository;
         $this->paginator = $paginator;
-    }
+    }// end __construct()
 
     /**
-     * Create paginated list.
+     * Get paginated list.
      *
      * @param int $page Page number
      *
-     * @return \Knp\Component\Pager\Pagination\PaginationInterface Paginated list
+     * @return PaginationInterface Paginated list
      */
     public function createPaginatedList(int $page): PaginationInterface
     {
@@ -55,43 +64,82 @@ class CategoryService
             $page,
             CategoryRepository::PAGINATOR_ITEMS_PER_PAGE
         );
-    }
+    }// end createPaginatedList()
 
     /**
-     * Save category.
+     * Find by id.
      *
-     * @param \App\Entity\Category $category Category entity
+     * @param int $id Category id
      *
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
-     */
-    public function save(Category $category): void
-    {
-        $this->categoryRepository->save($category);
-    }
-
-    /**
-     * Delete category.
+     * @return Category|null Category entity
      *
-     * @param \App\Entity\Category $category Category entity
-     *
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
-     */
-    public function delete(Category $category): void
-    {
-        $this->categoryRepository->delete($category);
-    }
-
-    /**
-     * Find category by Id.
-     *
-     * @param int $id Category Id
-     *
-     * @return \App\Entity\Category|null Category entity
+     * @throws NonUniqueResultException
      */
     public function findOneById(int $id): ?Category
     {
         return $this->categoryRepository->findOneById($id);
-    }
-}
+    }// end findOneById()
+
+    /**
+     * Find by title.
+     *
+     * @param string $title Category title
+     *
+     * @return Category|null Category entity
+     *
+     * @throws NonUniqueResultException
+     */
+    public function findOneByTitle(string $title): ?Category
+    {
+        return $this->categoryRepository->findOneByTitle($title);
+    }// end findOneByTitle()
+
+    /**
+     * Save entity.
+     *
+     * @param Category $category Category entity
+     */
+    public function save(Category $category): void
+    {
+        $this->categoryRepository->save($category);
+    }// end save()
+
+    /**
+     * Delete entity.
+     *
+     * @param Category $category Category entity
+     */
+    public function delete(Category $category): void
+    {
+        $this->categoryRepository->delete($category);
+    }// end delete()
+
+    /**
+     * Can Category be deleted?
+     *
+     * @param Category $category Category entity
+     *
+     * @return bool Result
+     *
+     * @throws NonUniqueResultException
+     * @throws NoResultException
+     */
+    public function canBeDeleted(Category $category): bool
+    {
+        $result = $this->operationRepository->countByCategory($category);
+
+        return !($result > 0);
+    }// end canBeDeleted()
+
+    /**
+     * Find by user.
+     *
+     * @param User $user User entity
+     *
+     * @return array Result
+     */
+    public function findByUser(User $user): array
+    {
+        return $this->categoryRepository->findByUser($user)->getQuery()->getResult();
+    }// end findByUser()
+}// end class

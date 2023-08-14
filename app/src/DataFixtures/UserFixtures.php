@@ -5,9 +5,10 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Enum\UserRole;
 use App\Entity\User;
 use Doctrine\Persistence\ObjectManager;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 /**
  * Class UserFixtures.
@@ -15,36 +16,33 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 class UserFixtures extends AbstractBaseFixtures
 {
     /**
-     * Password encoder.
-     *
-     * @var \Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface
+     * Password hasher.
      */
-    private $passwordEncoder;
+    private UserPasswordHasherInterface $passwordHasher;
 
     /**
-     * UserFixtures constructor.
-     *
-     * @param \Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface $passwordEncoder Password encoder
+     * @param UserPasswordHasherInterface $passwordHasher Password hasher
      */
-    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
+    public function __construct(UserPasswordHasherInterface $passwordHasher)
     {
-        $this->passwordEncoder = $passwordEncoder;
+        $this->passwordHasher = $passwordHasher;
     }
 
     /**
      * Load data.
-     *
-     * @param \Doctrine\Persistence\ObjectManager $manager Persistence object manager
      */
     public function loadData(ObjectManager $manager): void
     {
-        $this->createMany(10, 'users', function ($i) {
+        if (null === $this->manager || null === $this->faker) {
+            return;
+        }
+
+        $this->createMany(2, 'users', function (int $i) {
             $user = new User();
             $user->setEmail(sprintf('user%d@example.com', $i));
-            $user->setRoles([User::ROLE_USER]);
-            $user->setUsername(sprintf('user%d', $i));
+            $user->setRoles([UserRole::ROLE_USER->value]);
             $user->setPassword(
-                $this->passwordEncoder->encodePassword(
+                $this->passwordHasher->hashPassword(
                     $user,
                     'user1234'
                 )
@@ -53,13 +51,12 @@ class UserFixtures extends AbstractBaseFixtures
             return $user;
         });
 
-        $this->createMany(3, 'admins', function ($i) {
+        $this->createMany(1, 'admins', function (int $i) {
             $user = new User();
             $user->setEmail(sprintf('admin%d@example.com', $i));
-            $user->setRoles([User::ROLE_USER, User::ROLE_ADMIN]);
-            $user->setUsername(sprintf('admin%d', $i));
+            $user->setRoles([UserRole::ROLE_USER->value, UserRole::ROLE_ADMIN->value]);
             $user->setPassword(
-                $this->passwordEncoder->encodePassword(
+                $this->passwordHasher->hashPassword(
                     $user,
                     'admin1234'
                 )
@@ -68,21 +65,6 @@ class UserFixtures extends AbstractBaseFixtures
             return $user;
         });
 
-        $this->createMany(1, 'normal', function ($i) {
-            $user = new User();
-            $user->setEmail(sprintf('agnieszka.moryc@student.uj.edu.pl', $i));
-            $user->setRoles([User::ROLE_USER, User::ROLE_ADMIN]);
-            $user->setUsername(sprintf('san%d', $i));
-            $user->setPassword(
-                $this->passwordEncoder->encodePassword(
-                    $user,
-                    'admin1234'
-                )
-            );
-
-            return $user;
-        });
-
-        $manager->flush();
+        $this->manager->flush();
     }
 }

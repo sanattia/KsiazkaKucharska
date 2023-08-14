@@ -13,27 +13,23 @@ use Knp\Component\Pager\PaginatorInterface;
 /**
  * Class RecipeService.
  */
-class RecipeService
+class RecipeService implements RecipeServiceInterface
 {
     /**
      * Recipe repository.
-     *
-     * @var \App\Repository\RecipeRepository
      */
     private RecipeRepository $recipeRepository;
 
     /**
      * Paginator.
-     *
-     * @var \Knp\Component\Pager\PaginatorInterface
      */
     private PaginatorInterface $paginator;
 
     /**
-     * RecipeService constructor.
+     * Constructor.
      *
-     * @param \App\Repository\RecipeRepository          $recipeRepository Recipe repository
-     * @param \Knp\Component\Pager\PaginatorInterface $paginator      Paginator
+     * @param RecipeRepository   $recipeRepository Recipe repository
+     * @param PaginatorInterface $paginator        Paginator
      */
     public function __construct(RecipeRepository $recipeRepository, PaginatorInterface $paginator)
     {
@@ -42,13 +38,13 @@ class RecipeService
     }
 
     /**
-     * Create paginated list.
+     * Get paginated list.
      *
      * @param int $page Page number
      *
-     * @return \Knp\Component\Pager\Pagination\PaginationInterface Paginated list
+     * @return PaginationInterface<string, mixed> Paginated list
      */
-    public function createPaginatedList(int $page): PaginationInterface
+    public function getPaginatedList(int $page): PaginationInterface
     {
         return $this->paginator->paginate(
             $this->recipeRepository->queryAll(),
@@ -59,11 +55,7 @@ class RecipeService
 
     /**
      * Save recipe.
-     *
-     * @param \App\Entity\Recipe $recipe Recipe entity
-     *
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @param Recipe $recipe
      */
     public function save(Recipe $recipe): void
     {
@@ -71,12 +63,10 @@ class RecipeService
     }
 
     /**
-     * Delete recipe.
+     * Delete entity.
+     * @param Recipe $recipe
      *
-     * @param \App\Entity\Recipe $recipe Recipe entity
-     *
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @return void
      */
     public function delete(Recipe $recipe): void
     {

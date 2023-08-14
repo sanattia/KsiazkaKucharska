@@ -71,7 +71,7 @@ class IndexControllerTest extends WebTestCase
         // given
         $this->removeUser();
         $expectedStatusCode = 200; 
-        $adminUser = $this->createUser([UserRole::ROLE_USER->value, UserRole::ROLE_ADMIN->value]);
+        $adminUser = $this->createUser(['ROLE_USER', 'ROLE_ADMIN']);
         $this->httpClient->loginUser($adminUser);
 
         // when

@@ -67,7 +67,7 @@ class CategoryControllerTest extends WebTestCase
     {
         // given
         $expectedStatusCode = 200;
-        $adminUser = $this->createUser([UserRole::ROLE_USER->value, UserRole::ROLE_ADMIN->value]);
+        $adminUser = $this->createUser(["ROLE_USER", 'ROLE_ADMIN']);
         $this->httpClient->loginUser($adminUser);
 
         // when
@@ -113,7 +113,7 @@ class CategoryControllerTest extends WebTestCase
     public function testShowCategory(): void
     {
         // given
-        $adminUser = $this->createUser([UserRole::ROLE_ADMIN->value, UserRole::ROLE_USER->value]);
+        $adminUser = $this->createUser(['ROLE_ADMIN', 'ROLE_USER']);
         $this->httpClient->loginUser($adminUser);
 
         $expectedCategory = new Category();

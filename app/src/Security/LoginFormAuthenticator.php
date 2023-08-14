@@ -1,11 +1,12 @@
 <?php
 /**
- * Login form authenticator.
+ * Login Form Authenticator.
  */
 
 namespace App\Security;
 
-use Exception;
+use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -39,7 +40,7 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
      *
      * @const string
      */
-    public const DEFAULT_ROUTE = 'recipe_index';
+    public const DEFAULT_ROUTE = 'homepage';
 
     /**
      * URL Generator.
@@ -47,13 +48,20 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
     private UrlGeneratorInterface $urlGenerator;
 
     /**
+     * Entity manager.
+     */
+    private EntityManagerInterface  $entityManager;
+
+    /**
      * Constructor.
      *
-     * @param UrlGeneratorInterface $urlGenerator UrlGenerator
+     * @param UrlGeneratorInterface  $urlGenerator  Url generator
+     * @param EntityManagerInterface $entityManager Entity manager
      */
-    public function __construct(UrlGeneratorInterface $urlGenerator)
+    public function __construct(UrlGeneratorInterface $urlGenerator, EntityManagerInterface $entityManager)
     {
         $this->urlGenerator = $urlGenerator;
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -67,7 +75,8 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
      */
     public function supports(Request $request): bool
     {
-        return $request->isMethod('POST') && $this->getLoginUrl($request) === $request->getRequestUri();
+        return 'app_login' === $request->attributes->get('_route')
+            && $request->isMethod('POST');
     }
 
     /**
@@ -81,7 +90,7 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
      * You may throw any AuthenticationException in this method in case of error (e.g.
      * a UserNotFoundException when the user cannot be found).
      *
-     * @param Request $request Request
+     * @param Request $request HTTP request
      *
      * @return Passport Passport
      *
@@ -92,6 +101,12 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
         $email = $request->request->get('email', '');
 
         $request->getSession()->set(Security::LAST_USERNAME, $email);
+
+        $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
+
+        if ($user && $user->getBlocked()) {
+            throw new AuthenticationException('message.blocked');
+        }
 
         return new Passport(
             new UserBadge($email),
@@ -117,7 +132,7 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
      *
      * @return Response|null HTTP response
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {

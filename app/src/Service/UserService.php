@@ -1,15 +1,15 @@
 <?php
 /**
- * User service.
+ * User Service.
  */
 
 namespace App\Service;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
-use DateTimeImmutable;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 /**
  * Class UserService.
@@ -22,96 +22,152 @@ class UserService implements UserServiceInterface
     private UserRepository $userRepository;
 
     /**
-     * Paginator.
+    Paginator.
      */
     private PaginatorInterface $paginator;
 
+
     /**
-     * Constructor.
-     *
-     * @param UserRepository     $userRepository User repository
-     * @param PaginatorInterface $paginator      Paginator
+     * Recipe service.
      */
-    public function __construct(UserRepository $userRepository, PaginatorInterface $paginator)
+    private RecipeServiceInterface $recipeService;
+
+    /**
+     * Category service.
+     */
+    private CategoryServiceInterface $categoryService;
+
+    /**
+     * Report service.
+     */
+    private ReportServiceInterface $reportService;
+
+    /**
+     * UserService constructor.
+     *
+     * @param UserRepository              $userRepository   User repository
+     * @param UserPasswordHasherInterface $passwordHasher   Password hasher
+     * @param PaginatorInterface          $paginator        Paginator
+     * @param CategoryServiceInterface    $categoryService  Category service
+     * @param RecipeServiceInterface      $recipeService    Recipe service
+     */
+    public function __construct(UserRepository $userRepository, UserPasswordHasherInterface $passwordHasher, PaginatorInterface $paginator, CategoryServiceInterface $categoryService, RecipeServiceInterface $recipeService)
     {
         $this->userRepository = $userRepository;
         $this->paginator = $paginator;
-    }
+        $this->passwordHasher = $passwordHasher;
+        $this->recipeService = $recipeService;
+        $this->categoryService = $categoryService;
+    }// end __construct()
 
     /**
-     * Get paginated list.
+     * Create paginated list.
      *
      * @param int $page Page number
      *
      * @return PaginationInterface<string, mixed> Paginated list
      */
-    public function getPaginatedList(int $page): PaginationInterface
+    public function createPaginationList(int $page): PaginationInterface
     {
         return $this->paginator->paginate(
             $this->userRepository->queryAll(),
             $page,
             UserRepository::PAGINATOR_ITEMS_PER_PAGE
         );
-    }
+    }// end createPaginationList()
 
     /**
      * Save entity.
      *
-     * @param User $user User entity
+     * @param User   $user     User entity
+     * @param string $password Password
      */
-    public function save(User $user): void
+    public function save(User $user, string $password): void
     {
-        if (null === $user->getId()) {
-            $user->setCreatedAt(new DateTimeImmutable());
-        }
-        $user->setUpdatedAt(new DateTimeImmutable());
+        // encode the plain password
+        $user->setPassword(
+            $this->passwordHasher->hashPassword(
+                $user,
+                $password
+            )
+        );
 
-        $this->userRepository->save($user);
-    }
+        $user->setRoles(['ROLE_USER']);
+
+        $this->userRepository->save($user, true);
+    }// end save()
 
     /**
-     * Delete user.
+     * Delete entity.
      *
      * @param User $user User entity
      */
     public function delete(User $user): void
     {
-        $this->userRepository->delete($user);
-    }
+        $reports = $this->reportService->findByUser($user);
+        foreach ($reports as $report) {
+            $this->reportService->delete($report);
+        }
+
+
+        $recipes = $this->recipeService->findByUser($user);
+        foreach ($recipes as $recipe) {
+            $this->recipeService->delete($recipe);
+        }
+
+        $categories = $this->categoryService->findByUser($user);
+        foreach ($categories as $category) {
+            $this->categoryService->delete($category);
+        }
+
+        $this->userRepository->remove($user, true);
+    }// end delete()
 
     /**
-     * Find by id.
+     * Edit password.
      *
-     * @param int $id User id
-     *
-     * @return User|null User entity
+     * @param User   $user     User entity
+     * @param string $password Password
      */
-    public function findOneById(int $id): ?User
+    public function upgradePassword(User $user, string $password): void
     {
-        return $this->userRepository->findOneById($id);
-    }
+        // encode the plain password
+        $password = $this->passwordHasher->hashPassword(
+            $user,
+            $password
+        );
+
+        $this->userRepository->upgradePassword($user, $password);
+    }// end upgradePassword()
 
     /**
-     * Find user by email
-     * @param array $credentials
+     * Edit data.
      *
-     * @return User
+     * @param User $user User entity
      */
-    public function findOneBy(array $credentials): User
+    public function editData(User $user): void
     {
-        return $this->userRepository->findOneBy($credentials);
-    }
-
+        $this->userRepository->save($user, true);
+    }// end editData()
 
     /**
-     * Find user.
+     * Edit role.
      *
-     * @param string $email Email
-     *
-     * @return User|null
+     * @param User $user User entity
      */
-    public function findOneByEmail(string $email): ?User
+    public function editRole(User $user): void
     {
-        return $this->userRepository->findOneByEmail(['email' => $email]);
-    }
-}
+        // count admins
+        $admins = $this->userRepository->queryByRole('ROLE_ADMIN')->getQuery()->getResult();
+        $adminsCount = count($admins);
+
+        // if there is only one admin, do not change role
+        if ($adminsCount < 2 && !in_array('ROLE_ADMIN', $user->getRoles(), true)) {
+            return;
+        }
+
+        $this->userRepository->save($user, true);
+    }// end editRole()
+
+
+}// end class

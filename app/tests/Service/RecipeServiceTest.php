@@ -54,14 +54,12 @@ class RecipeServiceTest extends KernelTestCase
     {
         // given
         $category = new Category();
-        $category->setTitle('Test Category');
+        $category->setName('Test Category');
         $this->entityManager->persist($category);
         $this->entityManager->flush();
 
         $expectedRecipe = new Recipe();
         $expectedRecipe->setTitle('Test Recipe');
-        $expectedRecipe->setIngredients('Ingredients');
-        $expectedRecipe->setDescription('Description');
         $expectedRecipe->setCategory($category);
 
         // when
@@ -89,14 +87,12 @@ class RecipeServiceTest extends KernelTestCase
     {
         // given
         $category = new Category();
-        $category->setTitle('Test Category');
+        $category->setName('Test Category');
         $this->entityManager->persist($category);
         $this->entityManager->flush();
 
         $recipeToDelete = new Recipe();
         $recipeToDelete->setTitle('Test Recipe');
-        $recipeToDelete->setIngredients('Ingredients');
-        $recipeToDelete->setDescription('Description');
         $recipeToDelete->setCategory($category);
         $this->entityManager->persist($recipeToDelete);
         $this->entityManager->flush();
@@ -126,14 +122,12 @@ class RecipeServiceTest extends KernelTestCase
     {
         // given
         $category = new Category();
-        $category->setTitle('Test Category');
+        $category->setName('Test Category');
         $this->entityManager->persist($category);
         $this->entityManager->flush();
 
         $expectedRecipe = new Recipe();
         $expectedRecipe->setTitle('Test Recipe');
-        $expectedRecipe->setIngredients('Ingredients');
-        $expectedRecipe->setDescription('Description');
         $expectedRecipe->setCategory($category);
         $this->entityManager->persist($expectedRecipe);
         $this->entityManager->flush();
@@ -191,7 +185,7 @@ class RecipeServiceTest extends KernelTestCase
     {
         // given
         $category = new Category();
-        $category->setName('Test Category');
+        $category->setTitle('Test Category');
         $this->entityManager->persist($category);
         $this->entityManager->flush();
         $categoryId = $category->getId();
