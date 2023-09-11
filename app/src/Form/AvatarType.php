@@ -16,7 +16,6 @@ use Vich\UploaderBundle\Form\Type\VichImageType;
  */
 class AvatarType extends AbstractType
 {
-
     /**
      * Builds the form.
      *
@@ -30,7 +29,6 @@ class AvatarType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-
         $builder->add('imageFile', VichImageType::class, [
             'required' => false,
             'allow_delete' => true,
@@ -40,7 +38,6 @@ class AvatarType extends AbstractType
             'image_uri' => true,
             'asset_helper' => true,
         ]);
-
     }
 
     /**

@@ -14,43 +14,45 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
-
+/**
+ * Class Recipe.
+ */
 #[ORM\Entity(repositoryClass: RecipeRepository::class)]
-#[ORM\Table(name: "recipes")]
-#[UniqueEntity(fields: ["title"])]
+#[ORM\Table(name: 'recipes')]
+#[UniqueEntity(fields: ['title'])]
 class Recipe
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: "integer")]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[ORM\Column(type: "string", length: 255)]
-    #[Assert\Type(type: "string")]
-    #[Assert\Length(min: "3", max: "64")]
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\Type(type: 'string')]
+    #[Assert\Length(min: '3', max: '64')]
     private $title;
 
-    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: "recipes")]
+    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'recipes')]
     #[ORM\JoinColumn(nullable: false)]
     private $category;
 
-    #[ORM\Column(type: "datetime")]
+    #[ORM\Column(type: 'datetime')]
     #[Assert\Type(type: "\DateTimeInterface")]
     private $createdAt;
 
-    #[ORM\Column(type: "datetime")]
+    #[ORM\Column(type: 'datetime')]
     #[Assert\Type(type: "\DateTimeInterface")]
     private $updatedAt;
 
-    #[ORM\ManyToMany(targetEntity: Tag::class, inversedBy: "recipes")]
-    #[ORM\JoinTable(name: "recipes_tags")]
+    #[ORM\ManyToMany(targetEntity: Tag::class, inversedBy: 'recipes')]
+    #[ORM\JoinTable(name: 'recipes_tags')]
     private $tags;
 
-    #[ORM\OneToMany(mappedBy: "recipe", targetEntity: Comment::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: Comment::class, orphanRemoval: true)]
     private $comments;
 
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $time = null;
+    private ?DateTimeInterface $time = null;
 
     #[ORM\Column(length: 125, nullable: true)]
     private ?string $difficulty = null;
@@ -63,6 +65,9 @@ class Recipe
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $content = null;
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    private ?User $author;
 
     /**
      * Recipe constructor.
@@ -103,11 +108,33 @@ class Recipe
         $this->title = $title;
     }
 
+    /**
+     * Getter for Author.
+     *
+     * @return User|null User entity
+     */
+    public function getAuthor(): ?User
+    {
+        return $this->author;
+    }
+
+    /**
+     * Setter for Author.
+     *
+     * @param User|null $author
+     * @return Recipe
+     */
+    public function setAuthor(?User $author): self
+    {
+        $this->author = $author;
+
+        return $this;
+    }
 
     /**
      * Getter for category.
      *
-     * @return \App\Entity\Category|null Category
+     * @return Category|null Category
      */
     public function getCategory(): ?Category
     {
@@ -117,9 +144,9 @@ class Recipe
     /**
      * Setter for category.
      *
-     * @return \App\Entity\Category|null Category
+     * @param Category|null $category Category
      *
-     * @param \App\Entity\Category|null $category Category
+     * @return Recipe Category
      */
     public function setCategory(?Category $category): self
     {
@@ -131,7 +158,7 @@ class Recipe
     /**
      * Getter for Created At.
      *
-     * @return \DateTimeInterface|null Created at
+     * @return DateTimeInterface|null Created at
      */
     public function getCreatedAt(): ?DateTimeInterface
     {
@@ -141,7 +168,7 @@ class Recipe
     /**
      * Setter for Created at.
      *
-     * @param \DateTimeInterface $createdAt Created at
+     * @param DateTimeInterface $createdAt Created at
      */
     public function setCreatedAt(DateTimeInterface $createdAt): void
     {
@@ -151,7 +178,7 @@ class Recipe
     /**
      * Getter for Updated at.
      *
-     * @return \DateTimeInterface|null Updated at
+     * @return DateTimeInterface|null Updated at
      */
     public function getUpdatedAt(): ?DateTimeInterface
     {
@@ -161,7 +188,7 @@ class Recipe
     /**
      * Setter for Updated at.
      *
-     * @param \DateTimeInterface $updatedAt Updated at
+     * @param DateTimeInterface $updatedAt Updated at
      */
     public function setUpdatedAt(DateTimeInterface $updatedAt): void
     {
@@ -181,7 +208,7 @@ class Recipe
     /**
      * Add tag to collection.
      *
-     * @param \App\Entity\Tag $tag Tag entity
+     * @param Tag $tag Tag entity
      */
     public function addTag(Tag $tag): void
     {
@@ -193,7 +220,7 @@ class Recipe
     /**
      * Remove tag from collection.
      *
-     * @param \App\Entity\Tag $tag Tag entity
+     * @param Tag $tag Tag entity
      */
     public function removeTag(Tag $tag): void
     {
@@ -203,18 +230,20 @@ class Recipe
     }
 
     /**
-     * @return Collection|Comment[]
+     * Function getComments.
+     *
+     * @return Collection
      */
     public function getComments(): Collection
     {
         return $this->comments;
     }
 
-
     /**
-     * @return Comment|null comment
+     * Function addComment.
      *
      * @param Comment $comment
+     * @return Recipe comment
      */
     public function addComment(Comment $comment): self
     {
@@ -228,8 +257,6 @@ class Recipe
 
     /**
      * @return Comment|null $comment
-     *
-     * @param Comment $comment
      */
     public function removeComment(Comment $comment): self
     {
@@ -245,19 +272,18 @@ class Recipe
 
     /**
      * @return string|null Result
-     *
      */
     public function __toString()
     {
         return $this->title;
     }
 
-    public function getTime(): ?\DateTimeInterface
+    public function getTime(): ?DateTimeInterface
     {
         return $this->time;
     }
 
-    public function setTime(?\DateTimeInterface $time): self
+    public function setTime(?DateTimeInterface $time): self
     {
         $this->time = $time;
 

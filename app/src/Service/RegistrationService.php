@@ -11,7 +11,6 @@ use App\Repository\UserRepository;
 use App\Repository\UsersDataRepository;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-
 /**
  * Class RegistrationService.
  */
@@ -31,8 +30,8 @@ class RegistrationService
     /**
      * RegistrationService constructor.
      *
-     * @param \App\Repository\UserRepository                                        $userRepository      User repository
-     * @param \Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface $passwordEncoder    Password Encoder
+     * @param \App\Repository\UserRepository $userRepository  User repository
+     * @param UserPasswordEncoderInterface   $passwordEncoder Password Encoder
      */
     public function __construct(UserRepository $userRepository, UserPasswordEncoderInterface $passwordEncoder)
     {
@@ -43,10 +42,8 @@ class RegistrationService
     /**
      * Save user.
      *
-     * @param \App\Entity\User $user User entity
+     * @param User $user User entity
      *
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function save(User $user): void
     {
@@ -57,14 +54,12 @@ class RegistrationService
      * Register.
      *
      * @param                       $data
-     * @param \App\Entity\User      $user      User entity
+     * @param User $user User entity
      *
-     * @throws \Doctrine\ORM\ORMException
      */
-    public function register($data, User $user)
+    public function register($data, User $user): void
     {
         $user->setEmail($data['email']);
-        $user->setUsername($data['username']);
         $user->setPassword(
             $this->passwordEncoder->encodePassword($user, $data['password'])
         );

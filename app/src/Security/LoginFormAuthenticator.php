@@ -50,7 +50,7 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
     /**
      * Entity manager.
      */
-    private EntityManagerInterface  $entityManager;
+    private EntityManagerInterface $entityManager;
 
     /**
      * Constructor.
@@ -104,10 +104,6 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 
         $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
 
-        if ($user && $user->getBlocked()) {
-            throw new AuthenticationException('message.blocked');
-        }
-
         return new Passport(
             new UserBadge($email),
             new PasswordCredentials($request->request->get('password', '')),
@@ -140,7 +136,7 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
             return new RedirectResponse($targetPath);
         }
 
-        return new RedirectResponse($this->urlGenerator->generate(self::DEFAULT_ROUTE));
+        return new RedirectResponse($this->urlGenerator->generate('home'));
     }
 
     /**

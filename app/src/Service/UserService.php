@@ -22,10 +22,9 @@ class UserService implements UserServiceInterface
     private UserRepository $userRepository;
 
     /**
-    Paginator.
+     * Paginator.
      */
     private PaginatorInterface $paginator;
-
 
     /**
      * Recipe service.
@@ -45,11 +44,11 @@ class UserService implements UserServiceInterface
     /**
      * UserService constructor.
      *
-     * @param UserRepository              $userRepository   User repository
-     * @param UserPasswordHasherInterface $passwordHasher   Password hasher
-     * @param PaginatorInterface          $paginator        Paginator
-     * @param CategoryServiceInterface    $categoryService  Category service
-     * @param RecipeServiceInterface      $recipeService    Recipe service
+     * @param UserRepository              $userRepository  User repository
+     * @param UserPasswordHasherInterface $passwordHasher  Password hasher
+     * @param PaginatorInterface          $paginator       Paginator
+     * @param CategoryServiceInterface    $categoryService Category service
+     * @param RecipeServiceInterface      $recipeService   Recipe service
      */
     public function __construct(UserRepository $userRepository, UserPasswordHasherInterface $passwordHasher, PaginatorInterface $paginator, CategoryServiceInterface $categoryService, RecipeServiceInterface $recipeService)
     {
@@ -109,7 +108,6 @@ class UserService implements UserServiceInterface
             $this->reportService->delete($report);
         }
 
-
         $recipes = $this->recipeService->findByUser($user);
         foreach ($recipes as $recipe) {
             $this->recipeService->delete($recipe);
@@ -168,6 +166,4 @@ class UserService implements UserServiceInterface
 
         $this->userRepository->save($user, true);
     }// end editRole()
-
-
 }// end class

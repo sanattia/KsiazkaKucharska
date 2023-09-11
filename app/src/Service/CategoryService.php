@@ -8,7 +8,6 @@ namespace App\Service;
 use App\Entity\Category;
 use App\Entity\User;
 use App\Repository\CategoryRepository;
-use App\Repository\OperationRepository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
@@ -32,7 +31,6 @@ class CategoryService implements CategoryServiceInterface
      */
     private CategoryRepository $categoryRepository;
 
-
     /**
      * Paginator.
      */
@@ -41,8 +39,8 @@ class CategoryService implements CategoryServiceInterface
     /**
      * CategoryService constructor.
      *
-     * @param CategoryRepository  $categoryRepository  Category repository
-     * @param PaginatorInterface  $paginator           Paginator
+     * @param CategoryRepository $categoryRepository Category repository
+     * @param PaginatorInterface $paginator          Paginator
      */
     public function __construct(CategoryRepository $categoryRepository, PaginatorInterface $paginator)
     {

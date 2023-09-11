@@ -6,6 +6,7 @@
 namespace App\Repository;
 
 use App\Entity\Recipe;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -55,6 +56,23 @@ class RecipeRepository extends ServiceEntityRepository
             ->join('recipe.category', 'category')
             ->leftJoin('recipe.tags', 'tags')
             ->orderBy('recipe.updatedAt', 'DESC');
+    }
+
+    /**
+     * Query all records.
+     *
+     * @param User $user User entity
+     *
+     * @return \Doctrine\ORM\QueryBuilder Query builder
+     */
+    public function queryAllByAuthor(User $user): QueryBuilder
+    {
+        $queryBuilder = $this->queryAll();
+
+        $queryBuilder->andWhere('recipe.author = :author')
+            ->setParameter('author', $user);
+
+        return $queryBuilder;
     }
 
     /**

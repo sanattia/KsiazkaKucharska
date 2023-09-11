@@ -3,7 +3,6 @@
  * Change Password Form Type.
  */
 
-
 namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;

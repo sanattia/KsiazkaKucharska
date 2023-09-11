@@ -15,25 +15,24 @@ interface RecipeServiceInterface
 {
     /**
      * Get paginated list.
-     * @param int $page
      *
-     * @return PaginationInterface
+     * @param int $page Page number
+     *
+     * @return PaginationInterface<string, mixed> Paginated list
      */
     public function getPaginatedList(int $page): PaginationInterface;
 
     /**
      * Save entity.
-     * @param Recipe $recipe
      *
-     * @return void
+     * @param Recipe $recipe Recipe entity
      */
     public function save(Recipe $recipe): void;
 
     /**
-     * Delete recipe.
-     * @param Recipe $recipe
+     * Delete entity.
      *
-     * @return void
+     * @param Recipe $recipe Recipe entity
      */
     public function delete(Recipe $recipe): void;
 }

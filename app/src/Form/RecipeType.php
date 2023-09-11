@@ -25,14 +25,14 @@ class RecipeType extends AbstractType
     /**
      * Tags data transformer.
      *
-     * @var \App\Form\DataTransformer\TagsDataTransformer
+     * @var TagsDataTransformer
      */
     private $tagsDataTransformer;
 
     /**
      * RecipeType constructor.
      *
-     * @param \App\Form\DataTransformer\TagsDataTransformer $tagsDataTransformer Tags data transformer
+     * @param TagsDataTransformer $tagsDataTransformer Tags data transformer
      */
     public function __construct(TagsDataTransformer $tagsDataTransformer)
     {
@@ -47,8 +47,8 @@ class RecipeType extends AbstractType
      *
      * @see FormTypeExtensionInterface::buildForm()
      *
-     * @param \Symfony\Component\Form\FormBuilderInterface $builder The form builder
-     * @param array                                        $options The options
+     * @param FormBuilderInterface $builder The form builder
+     * @param array                $options The options
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -135,7 +135,6 @@ class RecipeType extends AbstractType
             ]
         );
 
-
         $builder->get('tags')->addModelTransformer(
             $this->tagsDataTransformer
         );
@@ -144,7 +143,7 @@ class RecipeType extends AbstractType
     /**
      * Configures the options for this type.
      *
-     * @param \Symfony\Component\OptionsResolver\OptionsResolver $resolver The resolver for the options
+     * @param OptionsResolver $resolver The resolver for the options
      */
     public function configureOptions(OptionsResolver $resolver): void
     {

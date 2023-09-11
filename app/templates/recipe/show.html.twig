@@ -42,7 +42,7 @@
         <h2>{{ 'comment_list'|trans }}</h2>
         {% if comments|length > 0 %}
             {% for comment in comments %}
-                <h4>{{ comment.author }}</h4>
+                <h4>{{ comment.author.email }}</h4>
                 <small>
                     {{ comment.createdAt|format_datetime('medium', 'short') }}
                 </small>

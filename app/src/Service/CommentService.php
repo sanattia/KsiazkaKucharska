@@ -7,7 +7,6 @@ namespace App\Service;
 
 use App\Entity\Comment;
 use App\Repository\CommentRepository;
-use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 
 /**
@@ -17,15 +16,11 @@ class CommentService
 {
     /**
      * Comment repository.
-     *
-     * @var \App\Repository\CommentRepository
      */
     private CommentRepository $commentRepository;
 
     /**
      * Paginator.
-     *
-     * @var \Knp\Component\Pager\PaginatorInterface
      */
     private PaginatorInterface $paginator;
 
@@ -41,14 +36,11 @@ class CommentService
         $this->paginator = $paginator;
     }
 
-
     /**
      * Save comment.
      *
-     * @param \App\Entity\Comment $comment Comment entity
+     * @param Comment $comment Comment entity
      *
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function save(Comment $comment): void
     {
@@ -58,10 +50,8 @@ class CommentService
     /**
      * Delete comment.
      *
-     * @param \App\Entity\Comment $comment Comment entity
+     * @param Comment $comment Comment entity
      *
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function delete(Comment $comment): void
     {
@@ -69,8 +59,9 @@ class CommentService
     }
 
     /**
-     * Find comment by recipe
-     * @param array $recipe
+     * Find comment by recipe.
+     *
+     * @param array $recipe Recipe array
      *
      * @return Comment[]
      */

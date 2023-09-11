@@ -52,7 +52,7 @@ interface UserServiceInterface
      */
     public function editData(User $user): void;
 
-    /**
+    /*
      * Count admins.
      *
      * @return int Number of admins

@@ -5,6 +5,8 @@
 
 namespace App\Service;
 
+use App\Entity\Category;
+use App\Entity\Comment;
 use App\Entity\Recipe;
 use App\Repository\RecipeRepository;
 use Knp\Component\Pager\Pagination\PaginationInterface;
@@ -54,40 +56,42 @@ class RecipeService implements RecipeServiceInterface
     }
 
     /**
-     * Save recipe.
-     * @param Recipe $recipe
+     * Save entity.
+     *
+     * @param Recipe $recipe Recipe entity
      */
     public function save(Recipe $recipe): void
     {
         $this->recipeRepository->save($recipe);
-    }
+    }// end save()
 
     /**
      * Delete entity.
-     * @param Recipe $recipe
      *
-     * @return void
+     * @param Recipe $recipe Recipe entity
+     *
      */
     public function delete(Recipe $recipe): void
     {
         $this->recipeRepository->delete($recipe);
-    }
+    }// end delete()
 
     /**
      * Find recipe by Id.
      *
      * @param int $id Recipe Id
      *
-     * @return \App\Entity\Recipe|null Recipe entity
+     * @return Recipe|null Recipe entity
      */
     public function findOneById(int $id): ?Recipe
     {
-        return $this->recipeRepository->findOneById($id);
+        return $this->recipeRepository->findOneBy($id);
     }
 
     /**
-     * Find recipe by category
-     * @param array $category
+     * Find recipe by category.
+     *
+     * @param array $category Category array
      *
      * @return Recipe[]
      */

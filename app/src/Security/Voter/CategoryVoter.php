@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Category Voter.
+ * Category voter.
  */
 
 namespace App\Security\Voter;
@@ -9,13 +10,33 @@ use App\Entity\Category;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Security;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * Category Voter
+ * Class CategoryVoter.
  */
 class CategoryVoter extends Voter
 {
+    /**
+     * Edit permission.
+     *
+     * @const string
+     */
+    public const EDIT = 'EDIT';
+
+    /**
+     * Delete permission.
+     *
+     * @const string
+     */
+    public const DELETE = 'DELETE';
+
+    /**
+     * Create permission.
+     *
+     * @const string
+     */
+    public const CREATE = 'CREATE';
+
     /**
      * Security helper.
      */
@@ -37,11 +58,11 @@ class CategoryVoter extends Voter
      * @param string $attribute An attribute
      * @param mixed  $subject   The subject to secure, e.g. an object the user wants to access or any other PHP type
      *
-     * @return bool True if the attribute and subject are supported, false otherwise
+     * @return bool Result
      */
-    protected function supports($attribute, $subject)
+    protected function supports(string $attribute, mixed $subject): bool
     {
-        return in_array($attribute, ['VIEW', 'EDIT', 'DELETE'])
+        return in_array($attribute, [self::EDIT, self::DELETE, self::CREATE])
             && $subject instanceof Category;
     }
 
@@ -49,35 +70,53 @@ class CategoryVoter extends Voter
      * Perform a single access check operation on a given attribute, subject and token.
      * It is safe to assume that $attribute and $subject already passed the "supports()" method check.
      *
-     * @param string         $attribute Attribute
-     * @param mixed          $subject   Subject
+     * @param string         $attribute Permission name
+     * @param mixed          $subject   Object
      * @param TokenInterface $token     Security token
      *
-     * @return bool Result
+     * @return bool Vote result
      */
-    protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
+    protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool
     {
-        $user = $token->getUser();
-        // if the user is anonymous, do not grant access
-        if (!$user instanceof UserInterface) {
-            return false;
-        }
-
-        // ... (check conditions and return true to grant permission) ...
         switch ($attribute) {
-            case 'EDIT':
-            case 'DELETE':
-            case 'CREATE':
-            case 'VIEW':
-                if ($this->security->isGranted('ROLE_ADMIN')) {
-                    return true;
-                }
-                break;
-            default:
-                return false;
-                break;
+            case self::EDIT:
+                return $this->canEdit();
+            case self::DELETE:
+                return $this->canDelete();
+            case self::CREATE:
+                return $this->canCreate();
         }
 
         return false;
+    }
+
+    /**
+     * Checks if user can edit category.
+     *
+     * @return bool Result
+     */
+    private function canEdit(): bool
+    {
+        return $this->security->isGranted('ROLE_ADMIN');
+    }
+
+    /**
+     * Checks if user can delete category.
+     *
+     * @return bool Result
+     */
+    private function canDelete(): bool
+    {
+        return $this->security->isGranted('ROLE_ADMIN');
+    }
+
+    /**
+     * Checks if user can create category.
+     *
+     * @return bool Result
+     */
+    private function canCreate(): bool
+    {
+        return $this->security->isGranted('ROLE_ADMIN');
     }
 }

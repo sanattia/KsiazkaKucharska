@@ -25,8 +25,6 @@ class CommentController extends AbstractController
 {
     /**
      * Comment service.
-     *
-     * @var CommentService
      */
     private CommentService $commentService;
 

@@ -1,4 +1,7 @@
 <?php
+/**
+ * Category entity.
+ */
 
 namespace App\Entity;
 
@@ -7,6 +10,9 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * Class Category.
+ */
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 class Category
 {
@@ -37,7 +43,6 @@ class Category
         return $this->id;
     }
 
-
     /**
      * Getter for Created At.
      *
@@ -61,6 +66,7 @@ class Category
 
         return $this;
     }
+
     /**
      * Getter for Updated At.
      *
@@ -70,7 +76,6 @@ class Category
     {
         return $this->updatedAt;
     }
-
 
     /**
      * Setter for Updated at.
@@ -107,6 +112,9 @@ class Category
     }
 
     /**
+     * Function getRecipes
+     *
+     *
      * @return Collection
      */
     public function getRecipes(): Collection
@@ -115,9 +123,12 @@ class Category
     }
 
     /**
-     * @param Recipe $recipe
-     * @return Category recipe
+     * Function addRecipe.
      *
+     *
+     * @param Recipe $recipe Recipe Entity
+     *
+     * @return Category recipe
      */
     public function addRecipe(Recipe $recipe): self
     {
@@ -130,9 +141,11 @@ class Category
     }
 
     /**
-     * @param Recipe $recipe
-     * @return Category $recipe
+     * Function removeRecipe.
      *
+     * @param Recipe $recipe Recipe Entity
+     *
+     * @return Category $recipe
      */
     public function removeRecipe(Recipe $recipe): self
     {

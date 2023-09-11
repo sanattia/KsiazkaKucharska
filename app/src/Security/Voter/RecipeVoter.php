@@ -1,27 +1,49 @@
 <?php
 /**
- * Recipe Voter.
+ * Recipe voter.
  */
 
 namespace App\Security\Voter;
 
 use App\Entity\Recipe;
+use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * Recipe Voter
+ * Class RecipeVoter.
  */
 class RecipeVoter extends Voter
 {
+    /**
+     * Edit permission.
+     *
+     * @const string
+     */
+    public const EDIT = 'EDIT';
+
+    /**
+     * View permission.
+     *
+     * @const string
+     */
+    public const VIEW = 'VIEW';
+
+    /**
+     * Delete permission.
+     *
+     * @const string
+     */
+    public const DELETE = 'DELETE';
+
     /**
      * Security helper.
      *
      * @var Security
      */
-    private $security;
+    private Security $security;
 
     /**
      * OrderVoter constructor.
@@ -39,11 +61,11 @@ class RecipeVoter extends Voter
      * @param string $attribute An attribute
      * @param mixed  $subject   The subject to secure, e.g. an object the user wants to access or any other PHP type
      *
-     * @return bool True if the attribute and subject are supported, false otherwise
+     * @return bool Result
      */
-    protected function supports($attribute, $subject)
+    protected function supports(string $attribute, $subject): bool
     {
-        return in_array($attribute, ['CREATE', 'EDIT', 'DELETE'])
+        return in_array($attribute, [self::EDIT, self::VIEW, self::DELETE])
             && $subject instanceof Recipe;
     }
 
@@ -51,34 +73,53 @@ class RecipeVoter extends Voter
      * Perform a single access check operation on a given attribute, subject and token.
      * It is safe to assume that $attribute and $subject already passed the "supports()" method check.
      *
-     * @param string         $attribute Attribute
-     * @param mixed          $subject   Subject
+     * @param string         $attribute Permission name
+     * @param mixed          $subject   Object
      * @param TokenInterface $token     Security token
      *
-     * @return bool Result
+     * @return bool Vote result
      */
-    protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
+    protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool
     {
         $user = $token->getUser();
-        // if the user is anonymous, do not grant access
         if (!$user instanceof UserInterface) {
             return false;
         }
 
-        // ... (check conditions and return true to grant permission) ...
         switch ($attribute) {
-            case 'EDIT':
-            case 'DELETE':
-            case 'CREATE':
-                if ($this->security->isGranted('ROLE_ADMIN')) {
-                    return true;
-                }
-                break;
-            default:
-                return false;
-                break;
+            case self::EDIT:
+                return $this->canEdit($subject, $user);
+            case self::DELETE:
+                return $this->canDelete($subject, $user);
         }
 
         return false;
+    }
+
+    /**
+     * Checks if user can edit recipe.
+     *
+     * @param Recipe $recipe Recipe entity
+     * @param User   $user   User
+     *
+     * @return bool Result
+     */
+    private function canEdit(Recipe $recipe, User $user): bool
+    {
+        return $recipe->getAuthor() === $user;
+    }
+
+
+    /**
+     * Checks if user can delete recipe.
+     *
+     * @param Recipe $recipe Recipe entity
+     * @param User   $user   User
+     *
+     * @return bool Result
+     */
+    private function canDelete(Recipe $recipe, User $user): bool
+    {
+        return $recipe->getAuthor() === $user;
     }
 }

@@ -49,26 +49,6 @@ class RegistrationType extends AbstractType
                 ],
             ]
         );
-
-        $builder->add(
-            'firstName',
-            TextType::class,
-            [
-                'label' => 'label.firstname',
-                'required' => true,
-                'attr' => ['max_length' => 64],
-            ]
-        );
-
-        $builder->add(
-            'lastName',
-            TextType::class,
-            [
-                'label' => 'label.lastname',
-                'required' => true,
-                'attr' => ['max_length' => 64],
-            ]
-        );
     }// end buildForm()
 
     /**

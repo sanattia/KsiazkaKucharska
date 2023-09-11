@@ -11,6 +11,9 @@ use App\Form\RecipeType;
 use App\Form\CommentType;
 use App\Service\RecipeService;
 use App\Service\CommentService;
+use DateTime;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
@@ -45,18 +48,16 @@ class RecipeController extends AbstractController
     }
 
     /**
-     * Index action.
+     * Index acton.
      *
-     * @param \Symfony\Component\HttpFoundation\Request $request HTTP request
+     * @param Request $request HTTP Request
      *
-     * @return \Symfony\Component\HttpFoundation\Response HTTP response
-     *
-     * @Route(
-     *     "/",
-     *     methods={"GET"},
-     *     name="recipe_index",
-     * )
+     * @return Response HTTP response
      */
+    #[Route(
+        name: 'recipe_index',
+        methods: 'GET'
+    )]
     public function index(Request $request): Response
     {
         $page = $request->query->getInt('page', 1);
@@ -71,18 +72,17 @@ class RecipeController extends AbstractController
     /**
      * Show action.
      *
-     * @param Recipe           $recipe
+     * @param Recipe         $recipe         Recipe entity
      * @param CommentService $commentService
      *
-     * @return \Symfony\Component\HttpFoundation\Response HTTP response
-     *
-     * @Route(
-     *     "/{id}",
-     *     methods={"GET"},
-     *     name="recipe_show",
-     *     requirements={"id": "[1-9]\d*"},
-     * )
+     * @return Response HTTP response
      */
+    #[Route(
+        '/{id}',
+        name: 'recipe_show',
+        requirements: ['id' => '[1-9]\d*'],
+        methods: 'GET',
+    )]
     public function show(Recipe $recipe, CommentService $commentService): Response
     {
         return $this->render(
@@ -97,22 +97,16 @@ class RecipeController extends AbstractController
     /**
      * Create action.
      *
-     * @param \Symfony\Component\HttpFoundation\Request $request HTTP request
+     * @param Request $request HTTP request
      *
-     * @return \Symfony\Component\HttpFoundation\Response HTTP response
-     *
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
-     *
-     * @Route(
-     *     "/create",
-     *     methods={"GET", "POST"},
-     *     name="recipe_create",
-     * )
-     *
-     * @IsGranted("ROLE_ADMIN")
-     * )
+     * @return Response HTTP response
      */
+    #[Route(
+        '/create',
+        name: 'recipe_create',
+        methods: 'GET|POST',
+    )]
+    #[isGranted('ROLE_USER')]
     public function create(Request $request): Response
     {
         $recipe = new Recipe();
@@ -120,8 +114,10 @@ class RecipeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $recipe->setCreatedAt(new \DateTime());
-            $recipe->setUpdatedAt(new \DateTime());
+            $recipe->setCreatedAt(new DateTime());
+            $recipe->setUpdatedAt(new DateTime());
+            $user = $this->getUser();
+            $recipe -> setAuthor($user);
             $this->recipeService->save($recipe);
             $this->addFlash('success', 'message_added_successfully');
 
@@ -138,21 +134,14 @@ class RecipeController extends AbstractController
     /**
      * Edit action.
      *
-     * @param \Symfony\Component\HttpFoundation\Request $request HTTP request
-     * @param \App\Entity\Recipe                          $recipe    Recipe entity
+     * @param Request $request HTTP request
+     * @param Recipe  $recipe  Recipe entity
      *
-     * @return \Symfony\Component\HttpFoundation\Response HTTP response
+     * @return Response HTTP response
      *
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
-     *
-     *
-     * @IsGranted(
-     *     "EDIT",
-     *     subject="recipe",
-     * )
      */
     #[Route('/{id}/edit', name: 'recipe_edit', requirements: ['id' => '[1-9]\d*'], methods: 'GET|PUT')]
+    #[isGranted('EDIT', subject: 'recipe')]
     public function edit(Request $request, Recipe $recipe): Response
     {
         $form = $this->createForm(
@@ -166,7 +155,7 @@ class RecipeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $recipe->setUpdatedAt(new \DateTime());
+            $recipe->setUpdatedAt(new DateTime());
             $this->recipeService->save($recipe);
             $this->addFlash('success', 'message_updated_successfully');
 
@@ -185,20 +174,13 @@ class RecipeController extends AbstractController
     /**
      * Delete action.
      *
-     * @param \Symfony\Component\HttpFoundation\Request $request HTTP request
-     * @param \App\Entity\Recipe                          $recipe    Recipe entity
+     * @param Request $request HTTP request
+     * @param Recipe  $recipe  Recipe entity
      *
-     * @return \Symfony\Component\HttpFoundation\Response HTTP response
-     *
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
-     *
-     * @IsGranted(
-     *     "DELETE",
-     *     subject="recipe",
-     * )
+     * @return Response HTTP response
      */
     #[Route('/{id}/delete', name: 'recipe_delete', requirements: ['id' => '[1-9]\d*'], methods: 'GET|DELETE')]
+    #[isGranted('DELETE', subject: 'recipe')]
     public function delete(Request $request, Recipe $recipe): Response
     {
         $form = $this->createForm(FormType::class, $recipe, ['method' => 'DELETE']);
@@ -227,23 +209,18 @@ class RecipeController extends AbstractController
     /**
      * Comment action.
      *
-     * @param \Symfony\Component\HttpFoundation\Request $request        HTTP request
-     * @param \App\Entity\Recipe                          $recipe           Recipe entity
-     * @param CommentService                            $commentService
+     * @param Request        $request        HTTP request
+     * @param Recipe         $recipe         Recipe entity
+     * @param CommentService $commentService
      *
-     * @return \Symfony\Component\HttpFoundation\Response HTTP response
+     * @return Response HTTP response
      *
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws ORMException
+     * @throws OptimisticLockException
      *
-     * @Route(
-     *     "/{id}/comment",
-     *     methods={"GET", "POST"},
-     *     name="recipe_comment",
-     *     requirements={"id": "[1-9]\d*"},
-     * )
-     * @IsGranted("ROLE_USER")
      */
+    #[Route('/{id}/comment', name: 'recipe_comment', requirements: ['id' => '[1-9]\d*'], methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_USER')]
     public function comment(Request $request, Recipe $recipe, CommentService $commentService): Response
     {
         $comment = new Comment();
@@ -253,8 +230,8 @@ class RecipeController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $comment->setRecipe($recipe);
             $comment->setAuthor($this->getUser());
-            $comment->setCreatedAt(new \DateTime());
-            $comment->setUpdatedAt(new \DateTime());
+            $comment->setCreatedAt(new DateTime());
+            $comment->setUpdatedAt(new DateTime());
             $commentService->save($comment);
 
             $this->addFlash('success', 'message_added_successfully');

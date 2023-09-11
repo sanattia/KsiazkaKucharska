@@ -9,6 +9,7 @@ use App\Entity\Category;
 use App\Form\CategoryType;
 use App\Service\RecipeService;
 use App\Service\CategoryService;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -41,18 +42,16 @@ class CategoryController extends AbstractController
     }
 
     /**
-     * Index action.
+     * Index acton.
      *
-     * @param \Symfony\Component\HttpFoundation\Request $request HTTP request
+     * @param Request $request HTTP Request
      *
      * @return Response HTTP response
-     *
-     * @Route(
-     *     "/",
-     *     methods={"GET"},
-     *     name="category_index",
-     * )
      */
+    #[Route(
+        name: 'category_index',
+        methods: 'GET'
+    )]
     public function index(Request $request): Response
     {
         $page = $request->query->getInt('page', 1);
@@ -67,18 +66,17 @@ class CategoryController extends AbstractController
     /**
      * Show action.
      *
-     * @param \App\Entity\Category $category    Category entity
-     * @param RecipeService          $recipeService
+     * @param Category      $category      Category entity
+     * @param RecipeService $recipeService Recipe service
      *
      * @return Response HTTP response
-     *
-     * @Route(
-     *     "/{id}",
-     *     methods={"GET"},
-     *     name="category_show",
-     *     requirements={"id": "[1-9]\d*"},
-     * )
      */
+    #[Route(
+        '/{id}',
+        name: 'category_show',
+        requirements: ['id' => '[1-9]\d*'],
+        methods: 'GET',
+    )]
     public function show(Category $category, RecipeService $recipeService): Response
     {
         return $this->render(
@@ -92,19 +90,16 @@ class CategoryController extends AbstractController
     /**
      * Create action.
      *
-     * @param \Symfony\Component\HttpFoundation\Request $request HTTP request
+     * @param Request $request HTTP request
      *
      * @return Response HTTP response
-     *
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
-     *
-     * @Route(
-     *     "/create",
-     *     methods={"GET", "POST"},
-     *     name="category_create",
-     * )
      */
+    #[Route(
+        '/create',
+        name: 'category_create',
+        methods: 'GET|POST',
+    )]
+    #[isGranted('CREATE', subject: 'category')]
     public function create(Request $request): Response
     {
         $category = new Category();
@@ -130,21 +125,13 @@ class CategoryController extends AbstractController
     /**
      * Edit action.
      *
-     * @param \Symfony\Component\HttpFoundation\Request $request  HTTP request
-     * @param \App\Entity\Category                      $category Category entity
+     * @param Request  $request  HTTP request
+     * @param Category $category Category entity
      *
      * @return Response HTTP response
-     *
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
-     *
-     * @Route(
-     *     "/{id}/edit",
-     *     methods={"GET", "PUT"},
-     *     requirements={"id": "[1-9]\d*"},
-     *     name="category_edit",
-     * )
      */
+    #[Route('/{id}/edit', name: 'category_edit', requirements: ['id' => '[1-9]\d*'], methods: 'GET|PUT')]
+    #[isGranted('EDIT', subject: 'category')]
     public function edit(Request $request, Category $category): Response
     {
         $form = $this->createForm(CategoryType::class, $category, ['method' => 'PUT']);
@@ -171,21 +158,13 @@ class CategoryController extends AbstractController
     /**
      * Delete action.
      *
-     * @param \Symfony\Component\HttpFoundation\Request $request  HTTP request
-     * @param \App\Entity\Category                      $category Category entity
+     * @param Request  $request  HTTP request
+     * @param Category $category Category entity
      *
      * @return Response HTTP response
-     *
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
-     *
-     * @Route(
-     *     "/{id}/delete",
-     *     methods={"GET", "DELETE"},
-     *     requirements={"id": "[1-9]\d*"},
-     *     name="category_delete",
-     * )
      */
+    #[Route('/{id}/delete', name: 'category_delete', requirements: ['id' => '[1-9]\d*'], methods: 'GET|DELETE')]
+    #[isGranted('DELETE', subject: 'category')]
     public function delete(Request $request, Category $category): Response
     {
         if ($category->getRecipes()->count()) {

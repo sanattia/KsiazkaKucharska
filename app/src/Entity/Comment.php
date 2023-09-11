@@ -6,12 +6,11 @@
 namespace App\Entity;
 
 use App\Repository\CommentRepository;
-use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
-#[ORM\Table(name: "comments")]
+#[ORM\Table(name: 'comments')]
 class Comment
 {
     #[ORM\Id]
@@ -21,11 +20,11 @@ class Comment
 
     #[ORM\Column(type: 'datetime')]
     #[Assert\Type(type: '\DateTimeInterface')]
-    private DateTimeInterface $createdAt;
+    private \DateTimeInterface $createdAt;
 
     #[ORM\Column(type: 'datetime')]
     #[Assert\Type(type: '\DateTimeInterface')]
-    private DateTimeInterface $updatedAt;
+    private \DateTimeInterface $updatedAt;
 
     #[ORM\ManyToOne(targetEntity: User::class, fetch: 'EXTRA_LAZY')]
     #[ORM\JoinColumn(nullable: false)]
@@ -55,7 +54,7 @@ class Comment
      *
      * @return \DateTimeInterface|null Created at
      */
-    public function getCreatedAt(): ?DateTimeInterface
+    public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->createdAt;
     }
@@ -65,7 +64,7 @@ class Comment
      *
      * @param \DateTimeInterface $createdAt Created at
      */
-    public function setCreatedAt(DateTimeInterface $createdAt): void
+    public function setCreatedAt(\DateTimeInterface $createdAt): void
     {
         $this->createdAt = $createdAt;
     }
@@ -75,18 +74,17 @@ class Comment
      *
      * @return \DateTimeInterface|null Updated at
      */
-    public function getUpdatedAt(): ?DateTimeInterface
+    public function getUpdatedAt(): ?\DateTimeInterface
     {
         return $this->updatedAt;
     }
-
 
     /**
      * Setter for Updated at.
      *
      * @param \DateTimeInterface $updatedAt Updated at
      */
-    public function setUpdatedAt(DateTimeInterface $updatedAt): void
+    public function setUpdatedAt(\DateTimeInterface $updatedAt): void
     {
         $this->updatedAt = $updatedAt;
     }
@@ -136,7 +134,7 @@ class Comment
     }
 
     /**
-     * Getter for Content
+     * Getter for Content.
      *
      * @return string|null Content
      */

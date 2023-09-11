@@ -53,10 +53,8 @@ class CommentRepository extends ServiceEntityRepository
     /**
      * Save record.
      *
-     * @param \App\Entity\Comment $comment Comment entity
+     * @param Comment $comment Comment entity
      *
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function save(Comment $comment): void
     {
@@ -67,10 +65,8 @@ class CommentRepository extends ServiceEntityRepository
     /**
      * Delete record.
      *
-     * @param \App\Entity\Comment $comment Comment entity
+     * @param Comment $comment Comment entity
      *
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function delete(Comment $comment): void
     {
