@@ -6,10 +6,8 @@
 namespace App\Service;
 
 use App\Entity\User;
-use App\Entity\UsersData;
 use App\Repository\UserRepository;
-use App\Repository\UsersDataRepository;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 /**
  * Class RegistrationService.
@@ -19,7 +17,7 @@ class RegistrationService
     /**
      * Password encoder.
      */
-    private UserPasswordEncoderInterface $passwordEncoder;
+    private UserPasswordHasherInterface $passwordHasher;
 
     /**
      * User repository.
@@ -30,24 +28,13 @@ class RegistrationService
     /**
      * RegistrationService constructor.
      *
-     * @param \App\Repository\UserRepository $userRepository  User repository
-     * @param UserPasswordEncoderInterface   $passwordEncoder Password Encoder
+     * @param UserRepository $userRepository  User repository
+     * @param UserPasswordHasherInterface   $passwordHasher Password Hasher
      */
-    public function __construct(UserRepository $userRepository, UserPasswordEncoderInterface $passwordEncoder)
+    public function __construct(UserRepository $userRepository, UserPasswordHasherInterface $passwordHasher)
     {
         $this->userRepository = $userRepository;
-        $this->passwordEncoder = $passwordEncoder;
-    }
-
-    /**
-     * Save user.
-     *
-     * @param User $user User entity
-     *
-     */
-    public function save(User $user): void
-    {
-        $this->userRepository->save($user);
+        $this->passwordHasher = $passwordHasher;
     }
 
     /**
@@ -61,7 +48,7 @@ class RegistrationService
     {
         $user->setEmail($data['email']);
         $user->setPassword(
-            $this->passwordEncoder->encodePassword($user, $data['password'])
+            $this->passwordHasher->hashPassword($user, $data['password'])
         );
         $user->setRoles(['ROLE_USER']);
 

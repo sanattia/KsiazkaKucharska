@@ -23,6 +23,16 @@ interface RecipeServiceInterface
     public function getPaginatedList(int $page): PaginationInterface;
 
     /**
+     * Find entity by ID.
+     *
+     * @param int $id Entity ID
+     *
+     * @return Recipe|null Recipe entity
+     */
+    public function findOneById(int $id): ?Recipe;
+
+
+    /**
      * Save entity.
      *
      * @param Recipe $recipe Recipe entity

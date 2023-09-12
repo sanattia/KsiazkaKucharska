@@ -5,10 +5,10 @@
 
 namespace App\Service;
 
-use App\Entity\Category;
-use App\Entity\Comment;
 use App\Entity\Recipe;
 use App\Repository\RecipeRepository;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 
@@ -59,6 +59,8 @@ class RecipeService implements RecipeServiceInterface
      * Save entity.
      *
      * @param Recipe $recipe Recipe entity
+     * @throws ORMException
+     * @throws OptimisticLockException
      */
     public function save(Recipe $recipe): void
     {
@@ -69,7 +71,8 @@ class RecipeService implements RecipeServiceInterface
      * Delete entity.
      *
      * @param Recipe $recipe Recipe entity
-     *
+     * @throws ORMException
+     * @throws OptimisticLockException
      */
     public function delete(Recipe $recipe): void
     {

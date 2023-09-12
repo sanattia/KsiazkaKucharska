@@ -122,6 +122,7 @@ class Recipe
      * Setter for Author.
      *
      * @param User|null $author
+     *
      * @return Recipe
      */
     public function setAuthor(?User $author): self
@@ -243,6 +244,7 @@ class Recipe
      * Function addComment.
      *
      * @param Comment $comment
+     *
      * @return Recipe comment
      */
     public function addComment(Comment $comment): self
