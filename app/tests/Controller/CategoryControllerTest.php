@@ -5,9 +5,14 @@
 
 namespace Controller;
 
+use App\Entity\Category;
 use App\Entity\Enum\UserRole;
+use App\Entity\Recipe;
 use App\Entity\User;
+use App\Repository\CategoryRepository;
 use App\Repository\UserRepository;
+use Cassandra\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Psr\Container\ContainerExceptionInterface;
@@ -62,19 +67,151 @@ class CategoryControllerTest extends WebTestCase
     }
 
     /**
-     * Test show category.
+     * Test category show route.
+     *
+     * @dataProvider dataProviderForTestCategoryShow
      */
-    public function testCategoryShow(): void
+    public function testCategoryShowRoute(string $input, int $expectedCode): void
     {
         // given
-        $expectedStatusCode = '200';
+        $expectedCategory = new Category();
+        $expectedCategory->setName($input);
+        $expectedCategory->setCreatedAt(new \DateTime());
+        $expectedCategory->setUpdatedAt(new \DateTime());
+        $categoryRepository = static::getContainer()->get(CategoryRepository::class);
 
         // when
-        $this->httpClient->request('GET', self::TEST_ROUTE.'/1');
-        $resultHttpResponse = $this->httpClient->getResponse()->getStatusCode();
+        $categoryRepository->save($expectedCategory);
+
+        // when
+        $this->httpClient->request('GET', self::TEST_ROUTE.'/'.$expectedCategory->getId());
+        $resultHttpStatusCode = $this->httpClient->getResponse()->getStatusCode();
 
         // then
-        $this->assertEquals($expectedStatusCode, $resultHttpResponse);
+        $this->assertEquals($expectedCode, $resultHttpStatusCode);
+    }
+
+    /**
+     * Data provider for test category show.
+     */
+    public function dataProviderForTestCategoryShow(): \Generator
+    {
+        yield 'Status code' => [
+            'input' => 'Test Category Controller Show',
+            'expected' => 200,
+        ];
+    }
+
+    /**
+     * Test category edit route.
+     */
+    public function testCategoryEditRoute(): void
+    {
+        // given
+        $user = null;
+        try {
+            $user = $this->createUser(
+                ['ROLE_USER', 'ROLE_ADMIN'],
+                'testEditCategory@example.com',
+                'testCategoryEdit'
+            );
+        } catch (OptimisticLockException|NotFoundExceptionInterface|ORMException|ContainerExceptionInterface $e) {
+        }
+
+        $this->httpClient->loginUser($user);
+        $categoryRepository = static::getContainer()->get(CategoryRepository::class);
+        $testCategory = new Category();
+        $editCategoryName = 'editCategoryName';
+        $testCategory->setName($editCategoryName);
+        $testCategory->setCreatedAt(new \DateTime('now'));
+        $testCategory->setUpdatedAt(new \DateTime('now'));
+        $categoryRepository->save($testCategory);
+        $testCategoryId = $testCategory->getId();
+        $this->httpClient->request('GET', self::TEST_ROUTE.'/'.$testCategoryId.'/edit');
+
+        // when
+        $this->httpClient->submitForm(
+            'Zapisz',
+            ['category' => ['name' => $editCategoryName]]
+        );
+
+        // then
+        $savedCategory = $categoryRepository->findOneById($testCategoryId);
+        $this->assertEquals($testCategoryId,
+            $savedCategory->getId());
+
+        $result = $this->httpClient->getResponse();
+        $this->assertEquals(302, $result->getStatusCode());
+    }
+
+    /**
+     * Test category create route.
+     */
+    public function testCategoryCreateRoute(): void
+    {
+        // given
+        $user = null;
+        try {
+            $user = $this->createUser(
+                ['ROLE_USER', 'ROLE_ADMIN'],
+                'testCreateCat@example.com',
+                'testCategoryCreate'
+            );
+        } catch (OptimisticLockException|NotFoundExceptionInterface|ORMException|ContainerExceptionInterface $e) {
+        }
+
+        $this->httpClient->loginUser($user);
+        $categoryRepository = static::getContainer()->get(CategoryRepository::class);
+        $this->httpClient->request('GET', self::TEST_ROUTE.'/create');
+        $createCategoryName = 'createCategoryName';
+
+        // when
+        $this->httpClient->submitForm(
+            'Zapisz',
+            ['category' => ['name' => $createCategoryName]]
+        );
+
+        // then
+        $savedCategory = $categoryRepository->findOneByName($createCategoryName);
+        $this->assertEquals($createCategoryName,
+            $savedCategory->getName());
+
+        $result = $this->httpClient->getResponse();
+        $this->assertEquals(302, $result->getStatusCode());
+    }
+
+    /**
+     * Test category delete route.
+     */
+    public function testCategoryDeleteRoute(): void
+    {
+        // given
+        $user = null;
+        try {
+            $user = $this->createUser(['ROLE_USER', 'ROLE_ADMIN'], 'testDeleteCat@example.com'
+            );
+        } catch (OptimisticLockException|NotFoundExceptionInterface|ORMException|ContainerExceptionInterface) {
+        }
+
+        $this->httpClient->loginUser($user);
+        $categoryRepository = static::getContainer()->get(CategoryRepository::class);
+        $testCategory = new Category();
+        $testCategory->setName('CategoryToDelete');
+        $testCategory->setCreatedAt(new \DateTime('now'));
+        $testCategory->setUpdatedAt(new \DateTime('now'));
+        $categoryRepository->save($testCategory);
+        $testCategoryId = $testCategory->getId();
+
+
+        $this->httpClient->request('GET', self::TEST_ROUTE.'/'.$testCategoryId.'/delete');
+
+        // when
+        $this->httpClient->submitForm(
+            'Zapisz',
+        );
+
+        // then
+        $this->assertNull($categoryRepository->findOneById($testCategoryId));
     }
 
     /**

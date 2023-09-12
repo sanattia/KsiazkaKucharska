@@ -14,15 +14,6 @@ use Knp\Component\Pager\Pagination\PaginationInterface;
 interface UserServiceInterface
 {
     /**
-     * Create paginated list.
-     *
-     * @param int $page Page number
-     *
-     * @return PaginationInterface<string, mixed> Paginated list
-     */
-    public function createPaginationList(int $page): PaginationInterface;
-
-    /**
      * Save entity.
      *
      * @param User   $user     User entity

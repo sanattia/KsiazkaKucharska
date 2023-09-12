@@ -79,7 +79,7 @@ class CommentServiceTest extends KernelTestCase
         $createdAt = new DateTime();  // Current date and time
         $updatedAt = new DateTime();  // Current date and time
         try {
-            $testUser = $this->createUser([UserRole::ROLE_ADMIN->value, UserRole::ROLE_USER->value], 'test_comment__admin@example.com');
+            $testUser = $this->createUser([UserRole::ROLE_ADMIN->value, UserRole::ROLE_USER->value], 'test_comment_save_admin@example.com');
             $this->entityManager->persist($testUser);
         } catch (OptimisticLockException|ORMException|NotFoundExceptionInterface|ContainerExceptionInterface $e) {
         }
@@ -132,7 +132,7 @@ class CommentServiceTest extends KernelTestCase
         $createdAt = new DateTime();  // Current date and time
         $updatedAt = new DateTime();  // Current date and time
         try {
-            $testUser = $this->createUser([UserRole::ROLE_ADMIN->value, UserRole::ROLE_USER->value], 'test_comment__admin@example.com');
+            $testUser = $this->createUser([UserRole::ROLE_ADMIN->value, UserRole::ROLE_USER->value], 'test_comment_delete_admin@example.com');
             $this->entityManager->persist($testUser);
         } catch (OptimisticLockException|ORMException|NotFoundExceptionInterface|ContainerExceptionInterface $e) {
         }
@@ -188,7 +188,7 @@ class CommentServiceTest extends KernelTestCase
         $this->entityManager->persist($recipe);
 
         try {
-            $testUser = $this->createUser([UserRole::ROLE_ADMIN->value, UserRole::ROLE_USER->value], 'test_comment__admin@example.com');
+            $testUser = $this->createUser([UserRole::ROLE_ADMIN->value, UserRole::ROLE_USER->value], 'test_comment_findby__admin@example.com');
             $this->entityManager->persist($testUser);
         } catch (OptimisticLockException|NotFoundExceptionInterface|ContainerExceptionInterface|ORMException $e) {
         }
@@ -213,10 +213,10 @@ class CommentServiceTest extends KernelTestCase
         $this->entityManager->flush();
 
         // when
-        $resultComments = $this->commentRepository->findBy(['recipe' => $recipe]);
+        $resultComments = $this->commentService->findBy(['recipe' => $recipe]);
 
         // then
-        $this->assertCount(2, $resultComments); // Expecting 2 recipes with the same category
+        $this->assertCount(2, $resultComments);
         $this->assertEquals($expectedComment1, $resultComments[0]);
         $this->assertEquals($expectedComment2, $resultComments[1]);
     }

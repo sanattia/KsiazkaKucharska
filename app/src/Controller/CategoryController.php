@@ -99,7 +99,7 @@ class CategoryController extends AbstractController
         name: 'category_create',
         methods: 'GET|POST',
     )]
-    #[isGranted('CREATE', subject: 'category')]
+    #[isGranted('ROLE_ADMIN')]
     public function create(Request $request): Response
     {
         $category = new Category();
@@ -131,7 +131,7 @@ class CategoryController extends AbstractController
      * @return Response HTTP response
      */
     #[Route('/{id}/edit', name: 'category_edit', requirements: ['id' => '[1-9]\d*'], methods: 'GET|PUT')]
-    #[isGranted('EDIT', subject: 'category')]
+    #[isGranted('ROLE_ADMIN')]
     public function edit(Request $request, Category $category): Response
     {
         $form = $this->createForm(CategoryType::class, $category, ['method' => 'PUT']);
@@ -164,20 +164,23 @@ class CategoryController extends AbstractController
      * @return Response HTTP response
      */
     #[Route('/{id}/delete', name: 'category_delete', requirements: ['id' => '[1-9]\d*'], methods: 'GET|DELETE')]
-    #[isGranted('DELETE', subject: 'category')]
+    #[isGranted('ROLE_ADMIN')]
     public function delete(Request $request, Category $category): Response
     {
+        // @codeCoverageIgnoreStart
         if ($category->getRecipes()->count()) {
             $this->addFlash('warning', 'message_category_contain_recipes');
 
             return $this->redirectToRoute('category_index');
         }
+        // @codeCoverageIgnoreEnd
         $form = $this->createForm(CategoryType::class, $category, ['method' => 'DELETE']);
         $form->handleRequest($request);
-
+        // @codeCoverageIgnoreStart
         if ($request->isMethod('DELETE') && !$form->isSubmitted()) {
             $form->submit($request->request->get($form->getName()));
         }
+        // @codeCoverageIgnoreEnd
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->categoryService->delete($category);

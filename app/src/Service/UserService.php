@@ -60,22 +60,6 @@ class UserService implements UserServiceInterface
     }// end __construct()
 
     /**
-     * Create paginated list.
-     *
-     * @param int $page Page number
-     *
-     * @return PaginationInterface<string, mixed> Paginated list
-     */
-    public function createPaginationList(int $page): PaginationInterface
-    {
-        return $this->paginator->paginate(
-            $this->userRepository->queryAll(),
-            $page,
-            UserRepository::PAGINATOR_ITEMS_PER_PAGE
-        );
-    }// end createPaginationList()
-
-    /**
      * Save entity.
      *
      * @param User   $user     User entity

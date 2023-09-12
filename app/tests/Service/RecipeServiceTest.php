@@ -195,7 +195,7 @@ class RecipeServiceTest extends KernelTestCase
         $expectedRecipeId = $expectedRecipe->getId();
 
         // when
-        $resultRecipe = $this->recipeRepository->findOneById($expectedRecipeId);
+        $resultRecipe = $this->recipeService->findOneById($expectedRecipeId);
 
         // then
         $this->assertEquals($expectedRecipe, $resultRecipe);
