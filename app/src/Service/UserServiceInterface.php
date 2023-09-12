@@ -30,31 +30,5 @@ interface UserServiceInterface
      */
     public function save(User $user, string $password): void;
 
-    /**
-     * Delete entity.
-     *
-     * @param User $user User entity
-     */
-    public function delete(User $user): void;
 
-    /**
-     * Edit password.
-     *
-     * @param User   $user     User entity
-     * @param string $password Password
-     */
-    public function upgradePassword(User $user, string $password): void;
-
-    /**
-     * Edit data.
-     *
-     * @param User $user User entity
-     */
-    public function editData(User $user): void;
-
-    /*
-     * Count admins.
-     *
-     * @return int Number of admins
-     */
 }// end interface

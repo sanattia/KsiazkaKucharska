@@ -33,15 +33,6 @@ interface CategoryServiceInterface
     public function findOneById(int $id): ?Category;
 
     /**
-     * Find entity by title.
-     *
-     * @param string $title Entity title
-     *
-     * @return Category|null Category entity
-     */
-    public function findOneByTitle(string $title): ?Category;
-
-    /**
      * Save entity.
      *
      * @param Category $category Category entity
@@ -55,21 +46,4 @@ interface CategoryServiceInterface
      */
     public function delete(Category $category): void;
 
-    /**
-     * Can Category be deleted?
-     *
-     * @param Category $category Category entity
-     *
-     * @return bool Result
-     */
-    public function canBeDeleted(Category $category): bool;
-
-    /**
-     * Find by user.
-     *
-     * @param User $user User entity
-     *
-     * @return array<string, mixed> Result
-     */
-    public function findByUser(User $user): array;
 }// end interface

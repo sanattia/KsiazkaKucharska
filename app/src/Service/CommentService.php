@@ -12,7 +12,7 @@ use Knp\Component\Pager\PaginatorInterface;
 /**
  * Class CommentService.
  */
-class CommentService
+class CommentService implements CommentServiceInterface
 {
     /**
      * Comment repository.

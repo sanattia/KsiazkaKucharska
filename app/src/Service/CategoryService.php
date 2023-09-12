@@ -78,19 +78,6 @@ class CategoryService implements CategoryServiceInterface
         return $this->categoryRepository->findOneById($id);
     }// end findOneById()
 
-    /**
-     * Find by title.
-     *
-     * @param string $title Category title
-     *
-     * @return Category|null Category entity
-     *
-     * @throws NonUniqueResultException
-     */
-    public function findOneByTitle(string $title): ?Category
-    {
-        return $this->categoryRepository->findOneByTitle($title);
-    }// end findOneByTitle()
 
     /**
      * Save entity.
@@ -112,32 +99,5 @@ class CategoryService implements CategoryServiceInterface
         $this->categoryRepository->delete($category);
     }// end delete()
 
-    /**
-     * Can Category be deleted?
-     *
-     * @param Category $category Category entity
-     *
-     * @return bool Result
-     *
-     * @throws NonUniqueResultException
-     * @throws NoResultException
-     */
-    public function canBeDeleted(Category $category): bool
-    {
-        $result = $this->operationRepository->countByCategory($category);
 
-        return !($result > 0);
-    }// end canBeDeleted()
-
-    /**
-     * Find by user.
-     *
-     * @param User $user User entity
-     *
-     * @return array Result
-     */
-    public function findByUser(User $user): array
-    {
-        return $this->categoryRepository->findByUser($user)->getQuery()->getResult();
-    }// end findByUser()
 }// end class

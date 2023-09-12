@@ -14,16 +14,6 @@ use Knp\Component\Pager\Pagination\PaginationInterface;
 interface CommentServiceInterface
 {
     /**
-     * Create paginated list.
-     *
-     * @param int $page Page number
-     *
-     * @return PaginationInterface<string, mixed> Paginated list
-     */
-    public function createPaginatedList(int $page): PaginationInterface;
-
-
-    /**
      * Save entity.
      *
      * @param Comment $comment Comment entity

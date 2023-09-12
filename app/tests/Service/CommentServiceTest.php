@@ -79,7 +79,7 @@ class CommentServiceTest extends KernelTestCase
         $createdAt = new DateTime();  // Current date and time
         $updatedAt = new DateTime();  // Current date and time
         try {
-            $testUser = $this->createUser([UserRole::ROLE_ADMIN->value, UserRole::ROLE_USER->value], 'test_category__admin@example.com');
+            $testUser = $this->createUser([UserRole::ROLE_ADMIN->value, UserRole::ROLE_USER->value], 'test_comment__admin@example.com');
             $this->entityManager->persist($testUser);
         } catch (OptimisticLockException|ORMException|NotFoundExceptionInterface|ContainerExceptionInterface $e) {
         }
@@ -132,7 +132,7 @@ class CommentServiceTest extends KernelTestCase
         $createdAt = new DateTime();  // Current date and time
         $updatedAt = new DateTime();  // Current date and time
         try {
-            $testUser = $this->createUser([UserRole::ROLE_ADMIN->value, UserRole::ROLE_USER->value], 'test_category__admin@example.com');
+            $testUser = $this->createUser([UserRole::ROLE_ADMIN->value, UserRole::ROLE_USER->value], 'test_comment__admin@example.com');
             $this->entityManager->persist($testUser);
         } catch (OptimisticLockException|ORMException|NotFoundExceptionInterface|ContainerExceptionInterface $e) {
         }
@@ -188,7 +188,7 @@ class CommentServiceTest extends KernelTestCase
         $this->entityManager->persist($recipe);
 
         try {
-            $testUser = $this->createUser([UserRole::ROLE_ADMIN->value, UserRole::ROLE_USER->value], 'test_category__admin@example.com');
+            $testUser = $this->createUser([UserRole::ROLE_ADMIN->value, UserRole::ROLE_USER->value], 'test_comment__admin@example.com');
             $this->entityManager->persist($testUser);
         } catch (OptimisticLockException|NotFoundExceptionInterface|ContainerExceptionInterface|ORMException $e) {
         }
