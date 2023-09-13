@@ -49,6 +49,19 @@ class TagService implements TagServiceInterface
     }
 
     /**
+     * Find by title.
+     *
+     * @param string $title Tag title
+     *
+     * @return Tag|null Tag entity
+     */
+    public function findOneByTitle(string $title): ?Tag
+    {
+        $criteria = ['title' => $title];
+        return $this->tagRepository->findOneBy($criteria);
+    }
+
+    /**
      * Delete tag.
      *
      * @param Tag $tag Tag entity

@@ -100,4 +100,25 @@ class TagServiceTest extends KernelTestCase
 
         $this->assertNull($resultTag);
     }
+
+    /**
+     * Test findOneByTitle.
+     *
+     */
+    public function testFindOneByTitle(): void
+    {
+        // given
+        $tag = new Tag();
+        $tag->setTitle('Test Tag');
+        $this->entityManager->persist($tag);
+        $this->entityManager->flush();
+
+        // when
+        $foundTag = $this->tagService->findOneByTitle('Test Tag');
+
+        // then
+        $this->assertInstanceOf(Tag::class, $foundTag);
+
+        $this->assertSame('Test Tag', $foundTag->getTitle());
+    }
 }
