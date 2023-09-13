@@ -41,9 +41,9 @@ security:
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
-        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY}
-        - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY}
-        - { path: ^/recipe, roles: IS_AUTHENTICATED_ANONYMOUSLY}
+        - { path: ^/login, roles: PUBLIC_ACCESS}
+        - { path: ^/, roles: PUBLIC_ACCESS}
+        - { path: ^/recipe, roles: PUBLIC_ACCESS}
 
 when@test:
     security:

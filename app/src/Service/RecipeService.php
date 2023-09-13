@@ -59,6 +59,7 @@ class RecipeService implements RecipeServiceInterface
      * Save entity.
      *
      * @param Recipe $recipe Recipe entity
+     *
      * @throws ORMException
      * @throws OptimisticLockException
      */
@@ -71,6 +72,7 @@ class RecipeService implements RecipeServiceInterface
      * Delete entity.
      *
      * @param Recipe $recipe Recipe entity
+     *
      * @throws ORMException
      * @throws OptimisticLockException
      */
@@ -88,7 +90,7 @@ class RecipeService implements RecipeServiceInterface
      */
     public function findOneById(int $id): ?Recipe
     {
-        return $this->recipeRepository->findOneBy($id);
+        return $this->recipeRepository->findOneBy(['id' => $id]);
     }
 
     /**

@@ -3,16 +3,13 @@
  * Registration controller tests.
  */
 
-namespace App\Tests\Controller;
+namespace Controller;
 
 use App\Entity\User;
-use App\Repository\AlbumRepository;
+
 use App\Repository\UserRepository;
-use Doctrine\ORM\OptimisticLockException;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * Class AlbumControllerTest.

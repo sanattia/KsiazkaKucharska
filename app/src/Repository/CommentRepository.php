@@ -30,7 +30,7 @@ class CommentRepository extends ServiceEntityRepository
     public const PAGINATOR_ITEMS_PER_PAGE = 10;
 
     /**
-     * BookRepository constructor.
+     * CommentRepository constructor.
      *
      * @param ManagerRegistry $registry Manager registry
      */
@@ -39,16 +39,6 @@ class CommentRepository extends ServiceEntityRepository
         parent::__construct($registry, Comment::class);
     }
 
-    /**
-     * Query all records.
-     *
-     * @return \Doctrine\ORM\QueryBuilder Query builder
-     */
-    public function queryAll(): QueryBuilder
-    {
-        return $this->getOrCreateQueryBuilder()
-            ->orderBy('comment.updatedAt', 'DESC');
-    }
 
     /**
      * Save record.
@@ -74,15 +64,4 @@ class CommentRepository extends ServiceEntityRepository
         $this->_em->flush();
     }
 
-    /**
-     * Get or create new query builder.
-     *
-     * @param QueryBuilder|null $queryBuilder Query builder
-     *
-     * @return QueryBuilder Query builder
-     */
-    private function getOrCreateQueryBuilder(QueryBuilder $queryBuilder = null): QueryBuilder
-    {
-        return $queryBuilder ?? $this->createQueryBuilder('comment');
-    }
 }

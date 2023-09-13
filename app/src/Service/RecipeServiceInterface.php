@@ -33,6 +33,16 @@ interface RecipeServiceInterface
 
 
     /**
+     * Find recipe by category
+     *
+     * @param array $category Category array
+     *
+     * @return Recipe[]
+     *
+     */
+    public function findBy(array $category): array;
+
+    /**
      * Save entity.
      *
      * @param Recipe $recipe Recipe entity

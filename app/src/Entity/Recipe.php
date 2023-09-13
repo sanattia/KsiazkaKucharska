@@ -258,6 +258,10 @@ class Recipe
     }
 
     /**
+     * Function removeComment.
+     *
+     * @param Comment $comment
+     *
      * @return Comment|null $comment
      */
     public function removeComment(Comment $comment): self
@@ -279,12 +283,23 @@ class Recipe
     {
         return $this->title;
     }
-
+    /**
+     * Gets the time.
+     *
+     * @return DateTimeInterface|null
+     */
     public function getTime(): ?DateTimeInterface
     {
         return $this->time;
     }
 
+    /**
+     * Sets the time.
+     *
+     * @param DateTimeInterface|null $time
+     *
+     * @return self
+     */
     public function setTime(?DateTimeInterface $time): self
     {
         $this->time = $time;
@@ -292,11 +307,23 @@ class Recipe
         return $this;
     }
 
+    /**
+     * Gets the difficulty.
+     *
+     * @return string|null
+     */
     public function getDifficulty(): ?string
     {
         return $this->difficulty;
     }
 
+    /**
+     * Sets the difficulty.
+     *
+     * @param string|null $difficulty
+     *
+     * @return self
+     */
     public function setDifficulty(?string $difficulty): self
     {
         $this->difficulty = $difficulty;
@@ -304,11 +331,23 @@ class Recipe
         return $this;
     }
 
+    /**
+     * Gets the portion.
+     *
+     * @return int|null
+     */
     public function getPortion(): ?int
     {
         return $this->portion;
     }
 
+    /**
+     * Sets the portion.
+     *
+     * @param int|null $portion
+     *
+     * @return self
+     */
     public function setPortion(?int $portion): self
     {
         $this->portion = $portion;
@@ -316,11 +355,23 @@ class Recipe
         return $this;
     }
 
+    /**
+     * Gets the calories.
+     *
+     * @return int|null
+     */
     public function getCalories(): ?int
     {
         return $this->calories;
     }
 
+    /**
+     * Sets the calories.
+     *
+     * @param int|null $calories
+     *
+     * @return self
+     */
     public function setCalories(?int $calories): self
     {
         $this->calories = $calories;
@@ -328,11 +379,23 @@ class Recipe
         return $this;
     }
 
+    /**
+     * Gets the content.
+     *
+     * @return string|null
+     */
     public function getContent(): ?string
     {
         return $this->content;
     }
 
+    /**
+     * Sets the content.
+     *
+     * @param string|null $content
+     *
+     * @return self
+     */
     public function setContent(?string $content): self
     {
         $this->content = $content;

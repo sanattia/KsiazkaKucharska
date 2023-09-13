@@ -10,6 +10,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * Class Tag.
+ */
 #[ORM\Entity(repositoryClass: TagRepository::class)]
 class Tag
 {

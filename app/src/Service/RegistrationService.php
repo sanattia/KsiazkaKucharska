@@ -12,7 +12,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 /**
  * Class RegistrationService.
  */
-class RegistrationService
+class RegistrationService implements RegistrationServiceInterface
 {
     /**
      * Password encoder.

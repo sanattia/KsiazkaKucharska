@@ -262,6 +262,10 @@
                 <source>title_comment_delete</source>
                 <target>Usuń komentarz</target>
             </trans-unit>
+            <trans-unit id="message.registered_successfully">
+                <source>message.registered_successfully</source>
+                <target>Sukces!</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
