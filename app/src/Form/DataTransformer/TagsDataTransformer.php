@@ -18,8 +18,6 @@ class TagsDataTransformer implements DataTransformerInterface
 {
     /**
      * Tag service.
-     *
-     * @var TagService
      */
     private TagService $tagService;
 

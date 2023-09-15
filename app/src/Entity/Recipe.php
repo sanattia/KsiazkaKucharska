@@ -6,7 +6,7 @@
 namespace App\Entity;
 
 use App\Repository\RecipeRepository;
-use DateTimeInterface;
+use DateTimeInterface as DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -52,7 +52,7 @@ class Recipe
     private $comments;
 
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
-    private ?DateTimeInterface $time = null;
+    private ?DateTime $time = null;
 
     #[ORM\Column(length: 125, nullable: true)]
     private ?string $difficulty = null;
@@ -121,9 +121,9 @@ class Recipe
     /**
      * Setter for Author.
      *
-     * @param User|null $author
+     * @param User|null $author User entity
      *
-     * @return Recipe
+     * @return Recipe Recipe entity
      */
     public function setAuthor(?User $author): self
     {
@@ -159,9 +159,9 @@ class Recipe
     /**
      * Getter for Created At.
      *
-     * @return DateTimeInterface|null Created at
+     * @return DateTime|null Created at
      */
-    public function getCreatedAt(): ?DateTimeInterface
+    public function getCreatedAt(): ?DateTime
     {
         return $this->createdAt;
     }
@@ -169,9 +169,9 @@ class Recipe
     /**
      * Setter for Created at.
      *
-     * @param DateTimeInterface $createdAt Created at
+     * @param DateTime $createdAt Created at
      */
-    public function setCreatedAt(DateTimeInterface $createdAt): void
+    public function setCreatedAt(DateTime $createdAt): void
     {
         $this->createdAt = $createdAt;
     }
@@ -179,9 +179,9 @@ class Recipe
     /**
      * Getter for Updated at.
      *
-     * @return DateTimeInterface|null Updated at
+     * @return DateTime|null Updated at
      */
-    public function getUpdatedAt(): ?DateTimeInterface
+    public function getUpdatedAt(): ?DateTime
     {
         return $this->updatedAt;
     }
@@ -189,9 +189,9 @@ class Recipe
     /**
      * Setter for Updated at.
      *
-     * @param DateTimeInterface $updatedAt Updated at
+     * @param DateTime $updatedAt Updated at
      */
-    public function setUpdatedAt(DateTimeInterface $updatedAt): void
+    public function setUpdatedAt(DateTime $updatedAt): void
     {
         $this->updatedAt = $updatedAt;
     }
@@ -231,9 +231,9 @@ class Recipe
     }
 
     /**
-     * Function getComments.
+     * Gets the comments associated with this recipe.
      *
-     * @return Collection
+     * @return Collection<Comment> The comments associated with this recipe
      */
     public function getComments(): Collection
     {
@@ -241,11 +241,11 @@ class Recipe
     }
 
     /**
-     * Function addComment.
+     * Adds a comment to the recipe.
      *
-     * @param Comment $comment
+     * @param Comment $comment The comment to add
      *
-     * @return Recipe comment
+     * @return Recipe Recipe entity
      */
     public function addComment(Comment $comment): self
     {
@@ -258,16 +258,16 @@ class Recipe
     }
 
     /**
-     * Function removeComment.
+     * Removes a comment from the recipe.
      *
-     * @param Comment $comment
+     * @param Comment $comment The comment to remove
      *
-     * @return Comment|null $comment
+     * @return Recipe Recipe entity
      */
     public function removeComment(Comment $comment): self
     {
         if ($this->comments->removeElement($comment)) {
-            // set the owning side to null (unless already changed)
+            // Set the owning side to null (unless already changed)
             if ($comment->getRecipe() === $this) {
                 $comment->setRecipe(null);
             }
@@ -283,12 +283,13 @@ class Recipe
     {
         return $this->title;
     }
+
     /**
      * Gets the time.
      *
-     * @return DateTimeInterface|null
+     * @return DateTime|null Time
      */
-    public function getTime(): ?DateTimeInterface
+    public function getTime(): ?DateTime
     {
         return $this->time;
     }
@@ -296,21 +297,20 @@ class Recipe
     /**
      * Sets the time.
      *
-     * @param DateTimeInterface|null $time
+     * @param DateTime|null $time Time
      *
-     * @return self
+     * @return Recipe Recipe entity
      */
-    public function setTime(?DateTimeInterface $time): self
+    public function setTime(?DateTime $time): self
     {
         $this->time = $time;
 
         return $this;
     }
-
     /**
      * Gets the difficulty.
      *
-     * @return string|null
+     * @return string|null Difficulty level (or null if not set)
      */
     public function getDifficulty(): ?string
     {
@@ -320,9 +320,9 @@ class Recipe
     /**
      * Sets the difficulty.
      *
-     * @param string|null $difficulty
+     * @param string|null $difficulty Difficulty level
      *
-     * @return self
+     * @return Recipe Recipe entity
      */
     public function setDifficulty(?string $difficulty): self
     {
@@ -334,7 +334,7 @@ class Recipe
     /**
      * Gets the portion.
      *
-     * @return int|null
+     * @return int|null Portion size (or null if not set)
      */
     public function getPortion(): ?int
     {
@@ -344,9 +344,9 @@ class Recipe
     /**
      * Sets the portion.
      *
-     * @param int|null $portion
+     * @param int|null $portion Portion size
      *
-     * @return self
+     * @return Recipe Recipe entity
      */
     public function setPortion(?int $portion): self
     {
@@ -358,7 +358,7 @@ class Recipe
     /**
      * Gets the calories.
      *
-     * @return int|null
+     * @return int|null Calories (or null if not set)
      */
     public function getCalories(): ?int
     {
@@ -368,9 +368,9 @@ class Recipe
     /**
      * Sets the calories.
      *
-     * @param int|null $calories
+     * @param int|null $calories Calories
      *
-     * @return self
+     * @return Recipe Recipe entity
      */
     public function setCalories(?int $calories): self
     {
@@ -382,7 +382,7 @@ class Recipe
     /**
      * Gets the content.
      *
-     * @return string|null
+     * @return string|null Content
      */
     public function getContent(): ?string
     {
@@ -392,9 +392,9 @@ class Recipe
     /**
      * Sets the content.
      *
-     * @param string|null $content
+     * @param string|null $content Content
      *
-     * @return self
+     * @return Recipe Recipe entity
      */
     public function setContent(?string $content): self
     {

@@ -11,6 +11,8 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
+ * Class CategoryRepository
+ *
  * @extends ServiceEntityRepository<Category>
  *
  * @method Category|null find($id, $lockMode = null, $lockVersion = null)
@@ -56,7 +58,6 @@ class CategoryRepository extends ServiceEntityRepository
      * Save record.
      *
      * @param Category $category Category entity
-     *
      */
     public function save(Category $category): void
     {
@@ -68,7 +69,6 @@ class CategoryRepository extends ServiceEntityRepository
      * Delete record.
      *
      * @param Category $category Category entity
-     *
      */
     public function delete(Category $category): void
     {

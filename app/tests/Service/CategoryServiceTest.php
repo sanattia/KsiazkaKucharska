@@ -12,9 +12,13 @@ use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Service\CategoryService;
 use App\Service\CategoryServiceInterface;
+use App\Service\RecipeService;
+use App\Service\RecipeServiceInterface;
 use DateTime;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Psr\Container\ContainerExceptionInterface;
@@ -43,6 +47,12 @@ class CategoryServiceTest extends KernelTestCase
     private KernelBrowser $httpClient;
 
     /**
+     * Recipe service.
+     */
+    private ?RecipeServiceInterface $recipeService;
+
+
+    /**
      * Set up test.
      *
      * @throws ContainerExceptionInterface
@@ -53,6 +63,7 @@ class CategoryServiceTest extends KernelTestCase
         $container = static::getContainer();
         $this->entityManager = $container->get('doctrine.orm.entity_manager');
         $this->categoryService = $container->get(CategoryService::class);
+        $this->recipeService = $container->get(RecipeService::class);
     }
 
 
@@ -207,5 +218,56 @@ class CategoryServiceTest extends KernelTestCase
         $userRepository->save($user, true);
 
         return $user;
+    }
+
+    /**
+     * Test category can be deleted.
+     */
+    public function testCanBeDeleted(): void
+    {
+        // given
+        $category = new Category();
+        $category->setName('testCategoryTitle2');
+        $category->setUpdatedAt(new DateTime());
+        $category->setCreatedAt(new DateTime());
+        $this->categoryService->save($category);
+
+        $categoryId = $category->getId();
+        $recipe = new Recipe();
+        $recipe->setTitle('testRecipe');
+        $recipe->setCreatedAt(new DateTime());
+        $recipe->setUpdatedAt(new DateTime());
+        $recipe->setCategory($category);
+        $this->recipeService->save($recipe);
+
+        // when
+        $canBeDeleted = $this->categoryService->canBeDeleted($category);
+
+        // then
+        $this->assertFalse($canBeDeleted);
+    }
+
+    /**
+     * Test category can be deleted with exception.
+     * @throws NonUniqueResultException
+     */
+    public function testCanBeDeletedWithException(): void
+    {
+        // then
+        $this->expectException(NoResultException::class);
+
+        // given
+        /** @var Category $resultCategory */
+        $category = $this->entityManager->createQueryBuilder()
+            ->select('category')
+            ->from(Category::class, 'category')
+            ->where('category.id = :id')
+            ->setParameter(':id', 123123123, Types::INTEGER)
+            ->getQuery()
+            ->getSingleResult();
+
+        // when
+        $canBeDeleted = $this->categoryService->canBeDeleted($category);
+        $this->assertFalse($canBeDeleted);
     }
 }

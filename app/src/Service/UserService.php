@@ -7,7 +7,6 @@ namespace App\Service;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
-use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
@@ -60,26 +59,23 @@ class UserService implements UserServiceInterface
     }// end __construct()
 
     /**
-     * Save entity.
+     * Save user.
      *
-     * @param User   $user     User entity
+     * @param User $user User entity
+     */
+    public function save(User $user): void
+    {
+        $this->userRepository->save($user);
+    }
+
+    /**
+     * Upgrade password.
+     *
+     * @param User   $user     User
      * @param string $password Password
      */
-    public function save(User $user, string $password): void
+    public function upgradePassword(User $user, string $password): void
     {
-        // encode the plain password
-        $user->setPassword(
-            $this->passwordHasher->hashPassword(
-                $user,
-                $password
-            )
-        );
-
-        $user->setRoles(['ROLE_USER']);
-
-        $this->userRepository->save($user, true);
-    }// end save()
-
-
-
+        $this->userRepository->upgradePassword($user, $password);
+    }
 }// end class

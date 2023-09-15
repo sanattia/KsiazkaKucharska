@@ -15,9 +15,8 @@ interface RegistrationServiceInterface
     /**
      * Register.
      *
-     * @param                       $data
-     * @param User $user User entity
+     * @param array $data An array of user registration data
+     * @param User  $user User entity
      */
-    public function register($data, User $user): void;
-
+    public function register(array $data, User $user): void;
 }// end interface

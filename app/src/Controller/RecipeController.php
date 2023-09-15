@@ -5,13 +5,12 @@
 
 namespace App\Controller;
 
-use App\Entity\Recipe;
 use App\Entity\Comment;
-use App\Form\RecipeType;
-use App\Form\CommentType;
-use App\Service\RecipeService;
+use App\Entity\Recipe;
+use App\Form\Type\CommentType;
+use App\Form\Type\RecipeType;
 use App\Service\CommentService;
-use DateTime;
+use App\Service\RecipeService;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -32,8 +31,6 @@ class RecipeController extends AbstractController
 {
     /**
      * Recipe service.
-     *
-     * @var RecipeService
      */
     private RecipeService $recipeService;
 
@@ -73,7 +70,7 @@ class RecipeController extends AbstractController
      * Show action.
      *
      * @param Recipe         $recipe         Recipe entity
-     * @param CommentService $commentService
+     * @param CommentService $commentService Comment Service
      *
      * @return Response HTTP response
      */
@@ -114,10 +111,10 @@ class RecipeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $recipe->setCreatedAt(new DateTime());
-            $recipe->setUpdatedAt(new DateTime());
+            $recipe->setCreatedAt(new \DateTime());
+            $recipe->setUpdatedAt(new \DateTime());
             $user = $this->getUser();
-            $recipe -> setAuthor($user);
+            $recipe->setAuthor($user);
             $this->recipeService->save($recipe);
             $this->addFlash('success', 'message_added_successfully');
 
@@ -138,7 +135,6 @@ class RecipeController extends AbstractController
      * @param Recipe  $recipe  Recipe entity
      *
      * @return Response HTTP response
-     *
      */
     #[Route('/{id}/edit', name: 'recipe_edit', requirements: ['id' => '[1-9]\d*'], methods: 'GET|PUT')]
     #[isGranted('EDIT', subject: 'recipe')]
@@ -155,7 +151,7 @@ class RecipeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $recipe->setUpdatedAt(new DateTime());
+            $recipe->setUpdatedAt(new \DateTime());
             $this->recipeService->save($recipe);
             $this->addFlash('success', 'message_updated_successfully');
 
@@ -211,13 +207,12 @@ class RecipeController extends AbstractController
      *
      * @param Request        $request        HTTP request
      * @param Recipe         $recipe         Recipe entity
-     * @param CommentService $commentService
+     * @param CommentService $commentService Comment Service
      *
      * @return Response HTTP response
      *
      * @throws ORMException
      * @throws OptimisticLockException
-     *
      */
     #[Route('/{id}/comment', name: 'recipe_comment', requirements: ['id' => '[1-9]\d*'], methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
@@ -230,8 +225,8 @@ class RecipeController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $comment->setRecipe($recipe);
             $comment->setAuthor($this->getUser());
-            $comment->setCreatedAt(new DateTime());
-            $comment->setUpdatedAt(new DateTime());
+            $comment->setCreatedAt(new \DateTime());
+            $comment->setUpdatedAt(new \DateTime());
             $commentService->save($comment);
 
             $this->addFlash('success', 'message_added_successfully');

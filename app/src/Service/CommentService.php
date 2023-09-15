@@ -40,7 +40,6 @@ class CommentService implements CommentServiceInterface
      * Save comment.
      *
      * @param Comment $comment Comment entity
-     *
      */
     public function save(Comment $comment): void
     {
@@ -51,7 +50,6 @@ class CommentService implements CommentServiceInterface
      * Delete comment.
      *
      * @param Comment $comment Comment entity
-     *
      */
     public function delete(Comment $comment): void
     {

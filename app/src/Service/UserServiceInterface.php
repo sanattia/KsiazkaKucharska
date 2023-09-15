@@ -6,7 +6,6 @@
 namespace App\Service;
 
 use App\Entity\User;
-use Knp\Component\Pager\Pagination\PaginationInterface;
 
 /**
  * Class UserServiceInterface.
@@ -16,10 +15,15 @@ interface UserServiceInterface
     /**
      * Save entity.
      *
-     * @param User   $user     User entity
+     * @param User $user User entity
+     */
+    public function save(User $user): void;
+
+    /**
+     * Upgrade password.
+     *
+     * @param User   $user     User
      * @param string $password Password
      */
-    public function save(User $user, string $password): void;
-
-
+    public function upgradePassword(User $user, string $password): void;
 }// end interface

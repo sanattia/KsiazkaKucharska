@@ -6,7 +6,7 @@
 namespace Form\Type;
 
 use App\Entity\Category;
-use App\Form\CategoryType;
+use App\Form\Type\CategoryType;
 use Symfony\Component\Form\Test\TypeTestCase;
 
 /**

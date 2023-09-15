@@ -7,10 +7,11 @@ namespace App\Repository;
 
 use App\Entity\Comment;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
+ * Class CommentRepository
+ *
  * @method Comment|null find($id, $lockMode = null, $lockVersion = null)
  * @method Comment|null findOneBy(array $criteria, array $orderBy = null)
  * @method Comment[]    findAll()
@@ -39,12 +40,10 @@ class CommentRepository extends ServiceEntityRepository
         parent::__construct($registry, Comment::class);
     }
 
-
     /**
      * Save record.
      *
      * @param Comment $comment Comment entity
-     *
      */
     public function save(Comment $comment): void
     {
@@ -56,12 +55,10 @@ class CommentRepository extends ServiceEntityRepository
      * Delete record.
      *
      * @param Comment $comment Comment entity
-     *
      */
     public function delete(Comment $comment): void
     {
         $this->_em->remove($comment);
         $this->_em->flush();
     }
-
 }

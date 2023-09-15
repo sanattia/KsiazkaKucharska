@@ -6,7 +6,6 @@
 namespace App\Service;
 
 use App\Entity\Comment;
-use Knp\Component\Pager\Pagination\PaginationInterface;
 
 /**
  * Interface CommentServiceInterface.
@@ -26,7 +25,6 @@ interface CommentServiceInterface
      * @param Comment $comment Comment entity
      */
     public function delete(Comment $comment): void;
-
 
     /**
      * Find comment by recipe.

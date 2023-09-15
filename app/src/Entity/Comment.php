@@ -39,6 +39,7 @@ class Comment
 
     #[ORM\Column(type: 'string', length: 255)]
     #[Assert\Type(type: 'string')]
+    #[Assert\NotBlank]
     #[Assert\Length(min: 3, max: 255)]
     private $content;
 

@@ -40,8 +40,6 @@ class RecipeVoter extends Voter
 
     /**
      * Security helper.
-     *
-     * @var Security
      */
     private Security $security;
 
@@ -108,7 +106,6 @@ class RecipeVoter extends Voter
     {
         return $recipe->getAuthor() === $user;
     }
-
 
     /**
      * Checks if user can delete recipe.

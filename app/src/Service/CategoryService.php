@@ -6,8 +6,8 @@
 namespace App\Service;
 
 use App\Entity\Category;
-use App\Entity\User;
 use App\Repository\CategoryRepository;
+use App\Repository\RecipeRepository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
@@ -35,16 +35,22 @@ class CategoryService implements CategoryServiceInterface
      * Paginator.
      */
     private PaginatorInterface $paginator;
+    /**
+     * Recipe repository.
+     */
+    private RecipeRepository $recipeRepository;
 
     /**
      * CategoryService constructor.
      *
      * @param CategoryRepository $categoryRepository Category repository
+     * @param RecipeRepository   $recipeRepository   Recipe repository
      * @param PaginatorInterface $paginator          Paginator
      */
-    public function __construct(CategoryRepository $categoryRepository, PaginatorInterface $paginator)
+    public function __construct(CategoryRepository $categoryRepository, RecipeRepository $recipeRepository, PaginatorInterface $paginator)
     {
         $this->categoryRepository = $categoryRepository;
+        $this->recipeRepository = $recipeRepository;
         $this->paginator = $paginator;
     }// end __construct()
 
@@ -78,6 +84,26 @@ class CategoryService implements CategoryServiceInterface
         return $this->categoryRepository->findOneById($id);
     }// end findOneById()
 
+    /**
+     * Can category be deleted?
+     *
+     * @param Category $category Category
+     *
+     * @return bool Can be deleted
+     */
+    public function canBeDeleted(Category $category): bool
+    {
+        try {
+            $result = $this->recipeRepository->countByCategory($category);
+
+            return !($result > 0);
+            // @codeCoverageIgnoreStart
+        } catch (NoResultException|NonUniqueResultException) {
+            return false;
+            // @codeCoverageIgnoreEnd
+        }
+    }
+
 
     /**
      * Save entity.
@@ -98,6 +124,4 @@ class CategoryService implements CategoryServiceInterface
     {
         $this->categoryRepository->delete($category);
     }// end delete()
-
-
 }// end class

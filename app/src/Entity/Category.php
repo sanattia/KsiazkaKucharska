@@ -10,6 +10,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class Category.
@@ -17,7 +18,6 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 class Category
 {
-
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -30,6 +30,7 @@ class Category
     private ?\DateTimeInterface $updatedAt = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     private ?string $name = null;
 
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Recipe::class, fetch: 'EXTRA_LAZY')]
@@ -42,6 +43,7 @@ class Category
     {
         $this->recipes = new ArrayCollection();
     }
+
     /**
      * Getter for Id.
      *
@@ -121,10 +123,9 @@ class Category
     }
 
     /**
-     * Function getRecipes
+     * Function getRecipes.
      *
-     *
-     * @return Collection
+     * @return Collection<Recipe> The recipes associated with this object
      */
     public function getRecipes(): Collection
     {
@@ -133,7 +134,6 @@ class Category
 
     /**
      * Function addRecipe.
-     *
      *
      * @param Recipe $recipe Recipe Entity
      *

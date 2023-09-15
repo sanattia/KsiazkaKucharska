@@ -9,7 +9,7 @@ use App\Entity\Recipe;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 
 /**
- * Interface.
+ * Recipe Service Interface.
  */
 interface RecipeServiceInterface
 {
@@ -31,14 +31,12 @@ interface RecipeServiceInterface
      */
     public function findOneById(int $id): ?Recipe;
 
-
     /**
-     * Find recipe by category
+     * Find recipe by category.
      *
      * @param array $category Category array
      *
      * @return Recipe[]
-     *
      */
     public function findBy(array $category): array;
 

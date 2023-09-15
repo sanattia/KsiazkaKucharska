@@ -9,8 +9,6 @@ use App\Entity\Tag;
 use App\Repository\TagRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
-use Knp\Component\Pager\Pagination\PaginationInterface;
-use Knp\Component\Pager\PaginatorInterface;
 
 /**
  * Class TagService.
@@ -19,11 +17,8 @@ class TagService implements TagServiceInterface
 {
     /**
      * Tag repository.
-     *
-     * @var TagRepository
      */
     private TagRepository $tagRepository;
-
 
     /**
      * TagService constructor.
@@ -58,6 +53,7 @@ class TagService implements TagServiceInterface
     public function findOneByTitle(string $title): ?Tag
     {
         $criteria = ['title' => $title];
+
         return $this->tagRepository->findOneBy($criteria);
     }
 

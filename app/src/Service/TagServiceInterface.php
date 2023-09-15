@@ -6,14 +6,12 @@
 namespace App\Service;
 
 use App\Entity\Tag;
-use Knp\Component\Pager\Pagination\PaginationInterface;
 
 /**
  * Interface TagServiceInterface.
  */
 interface TagServiceInterface
 {
-
     /**
      * Save entity.
      *
@@ -36,5 +34,4 @@ interface TagServiceInterface
      * @param Tag $tag Tag entity
      */
     public function delete(Tag $tag): void;
-
 }// end interface

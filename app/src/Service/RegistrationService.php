@@ -24,12 +24,11 @@ class RegistrationService implements RegistrationServiceInterface
      */
     private UserRepository $userRepository;
 
-
     /**
      * RegistrationService constructor.
      *
-     * @param UserRepository $userRepository  User repository
-     * @param UserPasswordHasherInterface   $passwordHasher Password Hasher
+     * @param UserRepository              $userRepository User repository
+     * @param UserPasswordHasherInterface $passwordHasher Password Hasher
      */
     public function __construct(UserRepository $userRepository, UserPasswordHasherInterface $passwordHasher)
     {
@@ -38,13 +37,12 @@ class RegistrationService implements RegistrationServiceInterface
     }
 
     /**
-     * Register.
+     * Register a user
      *
-     * @param                       $data
-     * @param User $user User entity
-     *
+     * @param array $data An array of user registration data (e.g., ['email' => 'user@example.com', 'password' => 'password'])
+     * @param User  $user The User entity to be registered
      */
-    public function register($data, User $user): void
+    public function register(array $data, User $user): void
     {
         $user->setEmail($data['email']);
         $user->setPassword(

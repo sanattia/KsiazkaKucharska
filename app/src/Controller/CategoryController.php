@@ -6,39 +6,42 @@
 namespace App\Controller;
 
 use App\Entity\Category;
-use App\Form\CategoryType;
-use App\Service\RecipeService;
+use App\Form\Type\CategoryType;
 use App\Service\CategoryService;
+use App\Service\RecipeService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class CategoryController.
  *
  * @Route("/category")
- *
  */
 class CategoryController extends AbstractController
 {
-
     /**
      * Category service.
-     *
-     * @var CategoryService
      */
     private CategoryService $categoryService;
+    /**
+     * Translator.
+     */
+    private TranslatorInterface $translator;
 
     /**
      * CategoryController constructor.
      *
-     * @param CategoryService $categoryService Category service
+     * @param CategoryService     $categoryService Category service
+     * @param TranslatorInterface $translator      Translator
      */
-    public function __construct(CategoryService $categoryService)
+    public function __construct(CategoryService $categoryService, TranslatorInterface $translator)
     {
         $this->categoryService = $categoryService;
+        $this->translator = $translator;
     }
 
     /**
@@ -167,24 +170,32 @@ class CategoryController extends AbstractController
     #[isGranted('ROLE_ADMIN')]
     public function delete(Request $request, Category $category): Response
     {
-        // @codeCoverageIgnoreStart
-        if ($category->getRecipes()->count()) {
-            $this->addFlash('warning', 'message_category_contain_recipes');
+        if (!$this->categoryService->canBeDeleted($category)) {
+            $this->addFlash(
+                'warning',
+                $this->translator->trans('message.category_contains_tasks')
+            );
 
             return $this->redirectToRoute('category_index');
         }
-        // @codeCoverageIgnoreEnd
-        $form = $this->createForm(CategoryType::class, $category, ['method' => 'DELETE']);
+
+        $form = $this->createForm(
+            CategoryType::class,
+            $category,
+            [
+                'method' => 'DELETE',
+                'action' => $this->generateUrl('category_delete', ['id' => $category->getId()]),
+            ]
+        );
         $form->handleRequest($request);
-        // @codeCoverageIgnoreStart
-        if ($request->isMethod('DELETE') && !$form->isSubmitted()) {
-            $form->submit($request->request->get($form->getName()));
-        }
-        // @codeCoverageIgnoreEnd
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->categoryService->delete($category);
-            $this->addFlash('success', 'message.deleted_successfully');
+
+            $this->addFlash(
+                'success',
+                $this->translator->trans('message.deleted_successfully')
+            );
 
             return $this->redirectToRoute('category_index');
         }

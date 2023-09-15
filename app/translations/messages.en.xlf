@@ -266,6 +266,66 @@
                 <source>message.registered_successfully</source>
                 <target>Success!</target>
             </trans-unit>
+            <trans-unit id="message_created_successfully">
+                <source>message_created_successfully</source>
+                <target>Success!</target>
+            </trans-unit>
+            <trans-unit id="message_edited_successfully">
+                <source>message_edited_successfully</source>
+                <target>Success!</target>
+            </trans-unit>
+            <trans-unit id="message.edited_successfully">
+                <source>message.edited_successfully</source>
+                <target>Success!</target>
+            </trans-unit>
+            <trans-unit id="label.new_password">
+                <source>label.new_password</source>
+                <target>New password</target>
+            </trans-unit>
+            <trans-unit id="title.user_edit">
+                <source>title.user_edit</source>
+                <target>Edit user</target>
+            </trans-unit>
+            <trans-unit id="Title">
+                <source>Title</source>
+                <target>Title</target>
+            </trans-unit>
+            <trans-unit id="Category">
+                <source>Category</source>
+                <target>Category</target>
+            </trans-unit>
+            <trans-unit id="label_none">
+                <source>label_none</source>
+                <target>none</target>
+            </trans-unit>
+            <trans-unit id="difficulty">
+                <source>difficulty</source>
+                <target>difficulty</target>
+            </trans-unit>
+            <trans-unit id="Calories">
+                <source>Calories</source>
+                <target>Calories</target>
+            </trans-unit>
+            <trans-unit id="Time">
+                <source>Time</source>
+                <target>Time</target>
+            </trans-unit>
+            <trans-unit id="Tagi">
+                <source>Tagi</source>
+                <target>Tagi</target>
+            </trans-unit>
+            <trans-unit id="Content">
+                <source>Content</source>
+                <target>Content</target>
+            </trans-unit>
+            <trans-unit id="Nazwa">
+                <source>Nazwa</source>
+                <target>Name</target>
+            </trans-unit>
+            <trans-unit id="label_content">
+                <source>label_content</source>
+                <target>Content</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
